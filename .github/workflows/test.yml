@@ -24,8 +24,14 @@ jobs:
           node-version: "20"
           cache: npm
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
       - run: npm ci
       - run: npm audit signatures
+      - run: npm run fetch-spec
+      - run: npm run build-spec
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
