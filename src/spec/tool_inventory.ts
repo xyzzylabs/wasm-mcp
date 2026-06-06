@@ -8,6 +8,10 @@ export const HOSTED_TOOLS = [
   "instruction_get",
   "instruction_list",
   "instruction_search",
+  "type_get",
+  "section_get",
+  "section_list",
+  "spec_search",
 ] as const;
 export type HostedToolName = (typeof HOSTED_TOOLS)[number];
 

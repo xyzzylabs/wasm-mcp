@@ -5,7 +5,7 @@
 
 import { z } from "zod";
 import { versionArg } from "../_args.js";
-import { loadInstructions } from "../../spec/instructions_data.js";
+import { loadInstructions } from "../../spec/spec_data.js";
 import { getInstruction } from "../../spec/instructions_query.js";
 import type { InstructionRecord } from "../../parser/instructions.js";
 import type { VersionValue } from "../../versions.js";

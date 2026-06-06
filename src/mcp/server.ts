@@ -28,6 +28,10 @@ import { specVersion, specVersionSchema } from "./tools/spec_version.js";
 import { instructionGet, instructionGetSchema } from "./tools/instruction_get.js";
 import { instructionList, instructionListSchema } from "./tools/instruction_list.js";
 import { instructionSearch, instructionSearchSchema } from "./tools/instruction_search.js";
+import { typeGet, typeGetSchema } from "./tools/type_get.js";
+import { sectionGet, sectionGetSchema } from "./tools/section_get.js";
+import { sectionList, sectionListSchema } from "./tools/section_list.js";
+import { specSearch, specSearchSchema } from "./tools/spec_search.js";
 
 function readPackageInfo(): { name: string; version: string } {
   try {
@@ -113,6 +117,78 @@ server.registerTool(
   },
   async (args) => {
     const r = instructionSearch(args);
+    return { content: [{ type: "text", text: JSON.stringify(r, null, 2) }] };
+  },
+);
+
+server.registerTool(
+  "type_get",
+  {
+    title: "Get type",
+    description:
+      "Look up a WebAssembly type or type form by name: concrete value types (`i32`, `i64`, `f32`, `f64`, `v128`, `funcref`, `externref`, …) or type forms (`functype`, `limits`, `memtype`, `tabletype`, `globaltype`, `reftype`, `valtype`, `rectype`, `heaptype`, …). Returns its classification, sibling members for category types, defining clause prose, SpecTec formal-rule references, and the rendered spec URL.",
+    inputSchema: typeGetSchema,
+    annotations: { readOnlyHint: true },
+  },
+  async (args) => {
+    const r = typeGet(args);
+    if (!r) {
+      return {
+        content: [{ type: "text", text: `No such type: ${args.name}. Try spec_search.` }],
+        isError: true,
+      };
+    }
+    return { content: [{ type: "text", text: JSON.stringify(r, null, 2) }] };
+  },
+);
+
+server.registerTool(
+  "section_get",
+  {
+    title: "Get spec section",
+    description:
+      "Fetch one spec clause by id or anchor (e.g. `syntax-numtype`, `valid-unreachable`, `exec-nop`, `binary-instr`, `text-instr`) — matching the rendered spec's stable fragment ids. Returns the clause title, cleaned prose, `:ref:` cross-references, the SpecTec `formal_refs` it cites, and the rendered URL. Validation/execution clauses are SpecTec-generated: prose may be terse, but formal_refs + url point to the formal rule.",
+    inputSchema: sectionGetSchema,
+    annotations: { readOnlyHint: true },
+  },
+  async (args) => {
+    const r = sectionGet(args);
+    if (!r) {
+      return {
+        content: [{ type: "text", text: `No such section: ${args.id}. Try spec_search or section_list.` }],
+        isError: true,
+      };
+    }
+    return { content: [{ type: "text", text: JSON.stringify(r, null, 2) }] };
+  },
+);
+
+server.registerTool(
+  "section_list",
+  {
+    title: "List spec sections",
+    description:
+      "Enumerate spec clauses for navigation, filterable by source `path` (`intro`, `syntax`, `valid`, `exec`, `binary`, `text`, `appendix`, or sub-paths like `syntax/types`), `anchor_prefix` (`syntax-`, `valid-`, …), `titled_only`, and `max_level`. Returns lightweight rows {id, anchors, title, level, path, url}; follow up with section_get.",
+    inputSchema: sectionListSchema,
+    annotations: { readOnlyHint: true },
+  },
+  async (args) => {
+    const r = sectionList(args);
+    return { content: [{ type: "text", text: JSON.stringify(r, null, 2) }] };
+  },
+);
+
+server.registerTool(
+  "spec_search",
+  {
+    title: "Search spec",
+    description:
+      "Full-text search across the spec section index — clause anchors/ids, titles, and prose. The entry point when you don't know the exact anchor. Returns ranked hits with a `matched_on` field (anchor-exact > title > anchor > prose) and a prose snippet for body matches; follow up with section_get.",
+    inputSchema: specSearchSchema,
+    annotations: { readOnlyHint: true },
+  },
+  async (args) => {
+    const r = specSearch(args);
     return { content: [{ type: "text", text: JSON.stringify(r, null, 2) }] };
   },
 );

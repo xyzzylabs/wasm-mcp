@@ -36,5 +36,5 @@ for snap in "${SNAPSHOTS[@]}"; do
   python3 scripts/dump-instructions.py "$snap" > "$raw"
 done
 
-echo "==> Normalising into baked artifacts" >&2
-npx --no-install tsx src/index/build_instructions.ts
+echo "==> Building unified baked artifacts (instructions + sections + types)" >&2
+npx --no-install tsx src/index/build_spec.ts

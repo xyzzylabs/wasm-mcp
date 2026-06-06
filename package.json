@@ -16,7 +16,7 @@
     "dist/paths.d.ts",
     "dist/versions.js",
     "dist/versions.d.ts",
-    "build/wasm-spec-main.json",
+    "build/wasm-spec-core-main.json",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"

@@ -27,6 +27,22 @@ Common workflow:
      signature, and validation/execution prose anchors + URLs.
   4. \`instruction_list { category? }\` — enumerate instructions,
      filterable by category, introducing version, or mnemonic prefix.
+  5. \`type_get { name }\` — a value type or type form ('i32',
+     'funcref', 'functype', 'limits') with its defining clause prose.
+  6. \`spec_search { query }\` — full-text search across clause
+     anchors, titles, and prose when you don't know the anchor.
+  7. \`section_get { id }\` — one spec clause by anchor (e.g.
+     'syntax-numtype', 'valid-unreachable'): prose, cross-refs,
+     SpecTec formal-rule references, and the rendered URL.
+  8. \`section_list { path? }\` — navigate the clause tree, scoped to
+     an area ('syntax', 'valid', 'exec', 'binary', 'text', 'appendix').
+
+Note on formal notation. Since 2025 the spec is authored in SpecTec;
+validation / execution clauses are generated from formal rules. This
+server keeps the hand-written prose and records each clause's SpecTec
+rule names in 'formal_refs', with 'url' linking the rendered
+notation. It does not itself render the formal grammar / reduction
+rules — follow the URL for those.
 
 The tool surface is intentionally narrow:
   - Read-only. No tool mutates state or writes to disk / the network.

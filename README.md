@@ -10,20 +10,27 @@ unauthenticated endpoint.
 
 ## What it gives you
 
-- `spec_version` — the pinned upstream commit + when it was indexed.
+- `spec_version` — the pinned upstream commit and package version.
+- `instruction_get` — opcode bytes, category, introducing version,
+  stack type signature, and validation + execution prose anchors /
+  URLs, by mnemonic (`i32.add`) or binary opcode (`0x6a`).
+- `instruction_list` — enumerate, filterable by category (numeric,
+  vector, reference, parametric, variable, table, memory, control,
+  ref, i31, struct, array, extern), introducing version, or prefix.
+- `instruction_search` — ranked free-text search across mnemonics,
+  categories, and opcodes.
+- `type_get` — value types (number / vector / reference) and type
+  forms (`functype`, `limits`, `memtype`, …) with defining prose.
+- `section_get` — one spec clause by id / anchor (structure,
+  validation, execution, binary, text), with prose, cross-references,
+  SpecTec formal-rule references, and the rendered URL.
+- `section_list` — navigate the clause tree by area or anchor prefix.
+- `spec_search` — full-text search across anchors, titles, and prose.
 
-More tools land in subsequent releases:
+Planned for a later release:
 
-- `instruction_get` — opcode, immediates, stack signature, validation
-  + execution prose anchors, by mnemonic (`i32.add`) or binary opcode.
-- `instruction_list` / `instruction_search` — enumerate / search,
-  filterable by category (numeric, vector, reference, parametric,
-  variable, table, memory, control).
-- `type_get` — value, vector, reference, function types, limits.
-- `section_get` / `clause_get` — spec section by id / anchor
-  (structure, validation, execution, binary, text).
-- `spec_search` — full-text search with stable anchors.
-- `proposal_list` — WebAssembly proposals + phases (optional).
+- `proposal_list` — WebAssembly proposals + phases.
+- `js-api` / `web-api` coverage via the same section/search tools.
 
 ## Contract
 

@@ -1,7 +1,7 @@
-// Runtime loader for the baked instruction artifact. Reads
+// Runtime loader for the unified baked artifact. Reads
 // `build/wasm-spec-core-<version>.json` (produced at build time by
-// src/index/build_instructions.ts) once per version and caches the
-// parsed result in-memory. Pure local read — no network, no writes.
+// src/index/build_spec.ts) once per version and caches the parsed
+// result in-memory. Pure local read — no network, no writes.
 
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
@@ -9,10 +9,14 @@ import { BUILD_DIR } from "../paths.js";
 import { buildArtifactName } from "./catalog.js";
 import { resolveVersion, type VersionValue } from "../versions.js";
 import type { InstructionRecord } from "../parser/instructions.js";
+import type { SpecClause } from "../parser/sections.js";
+import type { TypeEntry } from "../parser/types.js";
 
 export interface LoadedSnapshot {
   pin: { key: string; sha: string; spec: "core"; version: string };
   instructions: InstructionRecord[];
+  sections: SpecClause[];
+  types: TypeEntry[];
   report: Record<string, number>;
 }
 
@@ -34,7 +38,7 @@ export function loadSnapshot(version?: VersionValue): LoadedSnapshot {
     raw = readFileSync(file, "utf8");
   } catch (err) {
     throw new Error(
-      `Baked instruction artifact not found: ${file}. ` +
+      `Baked spec artifact not found: ${file}. ` +
         `Run \`npm run fetch-spec && npm run build-spec\` to generate it. (${String(err)})`,
     );
   }
@@ -43,9 +47,15 @@ export function loadSnapshot(version?: VersionValue): LoadedSnapshot {
   return snapshot;
 }
 
-/** Convenience: just the instruction records for a version. */
+/** Convenience accessors for a version. */
 export function loadInstructions(version?: VersionValue): InstructionRecord[] {
   return loadSnapshot(version).instructions;
+}
+export function loadSections(version?: VersionValue): SpecClause[] {
+  return loadSnapshot(version).sections;
+}
+export function loadTypes(version?: VersionValue): TypeEntry[] {
+  return loadSnapshot(version).types;
 }
 
 /** Test/Worker seam: inject a snapshot directly, bypassing the file read. */
