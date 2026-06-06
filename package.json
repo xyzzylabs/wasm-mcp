@@ -1,0 +1,65 @@
+{
+  "name": "wasm-mcp",
+  "version": "0.1.0",
+  "mcpName": "io.github.xyzzylabs/wasm-mcp",
+  "private": false,
+  "description": "Unofficial MCP server for the WebAssembly core specification — SHA-pinned instructions, types, sections, and search. Not affiliated with the W3C WebAssembly CG.",
+  "type": "module",
+  "bin": {
+    "wasm-mcp": "./dist/mcp/server.js"
+  },
+  "files": [
+    "dist/mcp/",
+    "dist/spec/",
+    "dist/util/",
+    "dist/paths.js",
+    "dist/paths.d.ts",
+    "dist/versions.js",
+    "dist/versions.d.ts",
+    "build/wasm-spec-main.json",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "build": "tsc && chmod +x dist/mcp/server.js",
+    "typecheck": "tsc --noEmit",
+    "fetch-spec": "bash scripts/fetch-spec.sh",
+    "build-spec": "bash scripts/build-spec.sh",
+    "parse": "tsx src/parser/cli.ts",
+    "mcp": "tsx src/mcp/server.ts",
+    "test": "vitest run --testTimeout=30000",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "cheerio": "^1.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.7"
+  },
+  "keywords": [
+    "webassembly",
+    "wasm",
+    "specification",
+    "language-spec",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xyzzylabs/wasm-mcp.git"
+  },
+  "license": "MIT",
+  "author": "xyzzylabs"
+}

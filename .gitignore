@@ -1,0 +1,23 @@
+node_modules/
+dist/
+build/
+# Vendored upstream checkouts (cloned at the SHAs in PINNED.txt) and
+# anything else cached under vendor/ — but PINNED.txt itself is the
+# tracked pin file the build pipeline reads.
+vendor/*
+!vendor/PINNED.txt
+.DS_Store
+*.log
+
+# `npm pack` / release tarball output.
+*.tgz
+
+# Cloudflare Workers / Wrangler artifacts (added when the Worker lands).
+.wrangler/
+.wrangler-state/
+.wrangler-dryrun/
+worker/node_modules/
+worker/.wrangler/
+worker/.wrangler-state/
+worker/worker-configuration.d.ts
+worker/public/

@@ -1,0 +1,9 @@
+# Pinned upstream commits.
+#
+# Read by scripts/fetch-spec.sh at build time. The running server
+# never reads this file — it reads the baked `build/*.json`
+# artifacts that this pin produced.
+#
+# Format: one `key=sha` per line. `#` starts a comment.
+
+spec/main=7a366e1531e6aab089c9a07ae5608909e187bb13
