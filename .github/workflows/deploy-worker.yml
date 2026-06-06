@@ -33,6 +33,9 @@ jobs:
       # `wrangler deploy` runs (build/ is gitignored).
       - run: npm run fetch-spec
       - run: npm run build-spec
+      # Build the VitePress docs site into worker/public/ (the Worker's
+      # static assets). Reads build/*.json for the snapshots page.
+      - run: npm run worker:assets
 
       - name: Install worker deps
         working-directory: worker
