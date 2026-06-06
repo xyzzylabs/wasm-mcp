@@ -18,8 +18,15 @@ or sponsored by the W3C WebAssembly Community Group or Working Group.
 
 Common workflow:
   1. \`spec_version\` — call first when you need to cite the spec or
-     report what you're reading. Returns the pinned upstream commit
-     (sha + when it was indexed).
+     report what you're reading. Returns the pinned upstream commit.
+  2. \`instruction_search\` — find an instruction from a partial name
+     or symptom ("extend", "trunc", "0x6a") when you don't know the
+     exact mnemonic. Returns ranked lightweight hits.
+  3. \`instruction_get { mnemonic }\` or \`{ opcode }\` — the full
+     record for one instruction: opcode bytes, category, stack type
+     signature, and validation/execution prose anchors + URLs.
+  4. \`instruction_list { category? }\` — enumerate instructions,
+     filterable by category, introducing version, or mnemonic prefix.
 
 The tool surface is intentionally narrow:
   - Read-only. No tool mutates state or writes to disk / the network.

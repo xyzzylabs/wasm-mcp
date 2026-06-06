@@ -3,7 +3,12 @@
 // actual registrations, and (later) by the Worker to filter to the
 // hosted-safe subset.
 
-export const HOSTED_TOOLS = ["spec_version"] as const;
+export const HOSTED_TOOLS = [
+  "spec_version",
+  "instruction_get",
+  "instruction_list",
+  "instruction_search",
+] as const;
 export type HostedToolName = (typeof HOSTED_TOOLS)[number];
 
 export const STDIO_ONLY_TOOLS = [] as const;
