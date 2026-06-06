@@ -36,3 +36,30 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm pack --dry-run
+
+  worker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      # The Worker bundles + imports build/*.json, so the data must
+      # exist before the worker typecheck/tests run.
+      - run: npm ci
+      - run: npm run fetch-spec
+      - run: npm run build-spec
+
+      - name: Worker typecheck + tests
+        working-directory: worker
+        run: |
+          npm ci
+          npm run typecheck
+          npm test
