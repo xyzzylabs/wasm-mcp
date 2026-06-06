@@ -20,4 +20,5 @@ worker/node_modules/
 worker/.wrangler/
 worker/.wrangler-state/
 worker/worker-configuration.d.ts
-worker/public/
+# worker/public/ is a hand-written landing page (source, tracked) —
+# unlike tc39-mcp where it's a generated docs build.

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wasm-mcp</title>
+<style>
+  body { font: 16px/1.6 system-ui, sans-serif; max-width: 44rem; margin: 3rem auto; padding: 0 1rem; color: #1a1a1a; }
+  h1 { font-size: 1.6rem; margin-bottom: .25rem; }
+  .sub { color: #666; margin-top: 0; }
+  code { background: #f2f2f2; padding: .1em .35em; border-radius: 3px; font-size: .9em; }
+  pre { background: #f7f7f7; padding: 1rem; border-radius: 6px; overflow-x: auto; }
+  a { color: #5546ff; }
+  .tools { columns: 2; font-size: .95rem; }
+  footer { margin-top: 2.5rem; color: #888; font-size: .85rem; }
+</style>
+</head>
+<body>
+<h1>wasm-mcp</h1>
+<p class="sub">Unofficial, read-only Model Context Protocol server over the WebAssembly specification.</p>
+
+<p>Not affiliated with the W3C WebAssembly Community Group or Working
+Group. Every tool is a deterministic local lookup over spec data
+pinned to a specific upstream commit — read-only, no execution, no
+auth, no network at request time.</p>
+
+<h2>Connect</h2>
+<p>Streamable-HTTP MCP endpoint:</p>
+<pre>POST /mcp</pre>
+<p>Or run locally over stdio:</p>
+<pre>npx wasm-mcp</pre>
+
+<h2>Tools</h2>
+<div class="tools">
+<code>spec_version</code><br>
+<code>instruction_get</code><br>
+<code>instruction_list</code><br>
+<code>instruction_search</code><br>
+<code>type_get</code><br>
+<code>section_get</code><br>
+<code>section_list</code><br>
+<code>spec_search</code><br>
+<code>proposal_list</code><br>
+</div>
+
+<footer>
+<a href="/privacy">Privacy</a> ·
+<a href="/health">Health</a> ·
+<a href="https://github.com/xyzzylabs/wasm-mcp">Source</a>
+</footer>
+</body>
+</html>

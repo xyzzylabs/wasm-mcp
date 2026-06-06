@@ -1,0 +1,29 @@
+name = "wasm-mcp"
+main = "src/index.ts"
+compatibility_date = "2025-05-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Static landing page. The Worker dispatches /mcp, /health, and
+# /privacy itself; everything else is served from this directory.
+[assets]
+directory = "./public"
+binding = "ASSETS"
+html_handling = "auto-trailing-slash"
+not_found_handling = "404-page"
+
+[vars]
+LOG_LEVEL = "info"
+
+# Built-in per-Worker rate limiter (Cloudflare's `ratelimit` binding).
+# 30 requests / 60 s per client IP — generous for any human or agent
+# workflow, tight enough to blunt scrapers. All spec data is bundled
+# into the Worker, so requests do no I/O; this cap is purely abuse
+# protection. Tune via the dashboard without re-deploying.
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "1101"
+simple = { limit = 30, period = 60 }
+
+[observability]
+enabled = true
