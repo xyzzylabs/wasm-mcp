@@ -1,0 +1,8 @@
+{
+  "refreshed_at": "2026-06-07T00:00:00Z",
+  "last_npm_publish": null,
+  "pins": {
+    "spec/main": "7a366e1531e6aab089c9a07ae5608909e187bb13",
+    "proposals/main": "e007b5c9f2e510573869985cbc635c7f4fc0b566"
+  }
+}

@@ -1,15 +1,17 @@
-// `spec_version` — return the pinned upstream commit + when it was
-// indexed. The simplest possible read-only tool; serves both as a
-// freshness probe for callers and as a smoke test that the data
-// pipeline ran.
+// `spec_version` — return the pinned upstream commits + package
+// version. Reads the pin from the baked artifacts (which ship in the
+// package), NOT from vendor/PINNED.txt (which is a build-time-only
+// input and is absent from the published package). The simplest
+// read-only tool; serves as a freshness probe and a smoke test that
+// the data pipeline ran.
 
 import { z } from "zod";
-import { readPins } from "../../spec/pin.js";
+import { loadSnapshot, loadProposals } from "../../spec/spec_data.js";
 
 export const specVersionSchema = {} as const;
 
 export interface SpecVersionPin {
-  /** Pin key as written in `vendor/PINNED.txt`, e.g. `spec/main`. */
+  /** Pin key, e.g. `spec/main` or `proposals/main`. */
   key: string;
   /** Full upstream commit SHA pinned for this snapshot. */
   sha: string;
@@ -20,7 +22,7 @@ export interface SpecVersionResult {
   name: string;
   /** Package version read from package.json at runtime. */
   version: string;
-  /** Every pin currently recorded in `vendor/PINNED.txt`. */
+  /** Pins baked into the package (core spec + proposals). */
   pins: SpecVersionPin[];
 }
 
@@ -32,6 +34,19 @@ export const SpecVersionResultSchema = z.object({
 });
 
 export function specVersion(packageInfo: { name: string; version: string }): SpecVersionResult {
-  const pins = readPins().map((p) => ({ key: p.key, sha: p.sha }));
+  const pins: SpecVersionPin[] = [];
+
+  const spec = loadSnapshot();
+  pins.push({ key: spec.pin.key, sha: spec.pin.sha });
+
+  // Proposals are a separate, optional artifact (separate upstream
+  // repo + pin). Tolerate its absence so the core tool still works.
+  try {
+    const proposals = loadProposals();
+    pins.push({ key: proposals.pin.key, sha: proposals.pin.sha });
+  } catch {
+    // proposals index not built — omit it from the pin list.
+  }
+
   return { name: packageInfo.name, version: packageInfo.version, pins };
 }

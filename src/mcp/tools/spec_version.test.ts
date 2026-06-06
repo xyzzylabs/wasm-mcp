@@ -9,12 +9,14 @@ describe("spec_version", () => {
     expect(r.pins.length).toBeGreaterThan(0);
   });
 
-  it("includes spec/main from vendor/PINNED.txt", () => {
+  it("includes spec/main + proposals/main from the baked artifacts", () => {
     const r = specVersion({ name: "wasm-mcp", version: "0.0.0" });
-    const main = r.pins.find((p) => p.key === "spec/main");
-    expect(main).toBeDefined();
+    const spec = r.pins.find((p) => p.key === "spec/main");
+    expect(spec).toBeDefined();
     // 40-char hex SHA.
-    expect(main!.sha).toMatch(/^[0-9a-f]{40}$/);
+    expect(spec!.sha).toMatch(/^[0-9a-f]{40}$/);
+    const proposals = r.pins.find((p) => p.key === "proposals/main");
+    expect(proposals!.sha).toMatch(/^[0-9a-f]{40}$/);
   });
 
   it("matches its declared output schema", () => {

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.xyzzylabs/wasm-mcp",
+  "title": "wasm-mcp",
+  "description": "Unofficial MCP server for the WebAssembly core specification: instructions, types, sections, search, and proposals.",
+  "websiteUrl": "https://wasm-mcp.chicoxyzzy.workers.dev",
+  "repository": {
+    "url": "https://github.com/xyzzylabs/wasm-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "wasm-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://wasm-mcp.chicoxyzzy.workers.dev/mcp"
+    }
+  ]
+}

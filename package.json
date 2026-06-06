@@ -11,7 +11,7 @@
   "files": [
     "dist/mcp/",
     "dist/spec/",
-    "dist/util/",
+    "dist/parser/",
     "dist/paths.js",
     "dist/paths.d.ts",
     "dist/versions.js",
@@ -23,7 +23,8 @@
     "CHANGELOG.md"
   ],
   "scripts": {
-    "build": "tsc && chmod +x dist/mcp/server.js",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc && chmod +x dist/mcp/server.js",
     "typecheck": "tsc --noEmit",
     "fetch-spec": "bash scripts/fetch-spec.sh",
     "build-spec": "bash scripts/build-spec.sh",
