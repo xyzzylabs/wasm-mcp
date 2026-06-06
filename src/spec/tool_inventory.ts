@@ -12,6 +12,7 @@ export const HOSTED_TOOLS = [
   "section_get",
   "section_list",
   "spec_search",
+  "proposal_list",
 ] as const;
 export type HostedToolName = (typeof HOSTED_TOOLS)[number];
 

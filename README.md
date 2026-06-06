@@ -26,10 +26,12 @@ unauthenticated endpoint.
   SpecTec formal-rule references, and the rendered URL.
 - `section_list` — navigate the clause tree by area or anchor prefix.
 - `spec_search` — full-text search across anchors, titles, and prose.
+- `proposal_list` — WebAssembly proposals and their phases (from the
+  pinned `WebAssembly/proposals` repo), filterable by status, phase,
+  champion, or affected spec.
 
 Planned for a later release:
 
-- `proposal_list` — WebAssembly proposals + phases.
 - `js-api` / `web-api` coverage via the same section/search tools.
 
 ## Contract

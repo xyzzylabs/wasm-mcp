@@ -16,6 +16,7 @@ cd "$(dirname "$0")/.."
 
 PIN_FILE="vendor/PINNED.txt"
 REPO_URL="${WASM_SPEC_REPO:-https://github.com/WebAssembly/spec}"
+PROPOSALS_URL="${WASM_PROPOSALS_REPO:-https://github.com/WebAssembly/proposals}"
 
 if [[ ! -f "$PIN_FILE" ]]; then
   echo "error: $PIN_FILE not found" >&2
@@ -65,6 +66,10 @@ while IFS= read -r raw; do
     spec/*)
       branch="${key#spec/}"
       clone_at_sha "vendor/wasm-spec-$branch" "$sha" "$REPO_URL"
+      ;;
+    proposals/*)
+      branch="${key#proposals/}"
+      clone_at_sha "vendor/wasm-proposals-$branch" "$sha" "$PROPOSALS_URL"
       ;;
     *)
       echo "==> Skipping unknown pin key: $key" >&2

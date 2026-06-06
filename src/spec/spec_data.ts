@@ -11,6 +11,7 @@ import { resolveVersion, type VersionValue } from "../versions.js";
 import type { InstructionRecord } from "../parser/instructions.js";
 import type { SpecClause } from "../parser/sections.js";
 import type { TypeEntry } from "../parser/types.js";
+import type { Proposal } from "../parser/proposals.js";
 
 export interface LoadedSnapshot {
   pin: { key: string; sha: string; spec: "core"; version: string };
@@ -61,4 +62,38 @@ export function loadTypes(version?: VersionValue): TypeEntry[] {
 /** Test/Worker seam: inject a snapshot directly, bypassing the file read. */
 export function primeCache(version: string, snapshot: LoadedSnapshot): void {
   cache.set(version, snapshot);
+}
+
+// ─── Proposals ─────────────────────────────────────────────────────
+// Proposals come from a separate upstream repo (WebAssembly/proposals)
+// with its own pin, so they're a separate baked artifact loaded
+// independently of the core spec snapshot.
+
+export interface LoadedProposals {
+  pin: { key: string; sha: string; repo: "proposals"; version: string };
+  proposals: Proposal[];
+}
+
+const proposalsCache = new Map<string, LoadedProposals>();
+
+export function loadProposals(version = "main"): LoadedProposals {
+  const cached = proposalsCache.get(version);
+  if (cached) return cached;
+  const file = resolve(BUILD_DIR, `wasm-proposals-${version}.json`);
+  let raw: string;
+  try {
+    raw = readFileSync(file, "utf8");
+  } catch (err) {
+    throw new Error(
+      `Baked proposals artifact not found: ${file}. ` +
+        `Run \`npm run fetch-spec && npm run build-spec\` to generate it. (${String(err)})`,
+    );
+  }
+  const loaded = JSON.parse(raw) as LoadedProposals;
+  proposalsCache.set(version, loaded);
+  return loaded;
+}
+
+export function primeProposalsCache(version: string, loaded: LoadedProposals): void {
+  proposalsCache.set(version, loaded);
 }

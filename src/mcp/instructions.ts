@@ -36,6 +36,8 @@ Common workflow:
      SpecTec formal-rule references, and the rendered URL.
   8. \`section_list { path? }\` — navigate the clause tree, scoped to
      an area ('syntax', 'valid', 'exec', 'binary', 'text', 'appendix').
+  9. \`proposal_list { status? }\` — WebAssembly proposals and their
+     phases, from the pinned WebAssembly/proposals repo.
 
 Note on formal notation. Since 2025 the spec is authored in SpecTec;
 validation / execution clauses are generated from formal rules. This

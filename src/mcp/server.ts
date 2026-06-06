@@ -32,6 +32,7 @@ import { typeGet, typeGetSchema } from "./tools/type_get.js";
 import { sectionGet, sectionGetSchema } from "./tools/section_get.js";
 import { sectionList, sectionListSchema } from "./tools/section_list.js";
 import { specSearch, specSearchSchema } from "./tools/spec_search.js";
+import { proposalList, proposalListSchema } from "./tools/proposal_list.js";
 
 function readPackageInfo(): { name: string; version: string } {
   try {
@@ -189,6 +190,21 @@ server.registerTool(
   },
   async (args) => {
     const r = specSearch(args);
+    return { content: [{ type: "text", text: JSON.stringify(r, null, 2) }] };
+  },
+);
+
+server.registerTool(
+  "proposal_list",
+  {
+    title: "List WebAssembly proposals",
+    description:
+      "List WebAssembly proposals and their phases from the pinned WebAssembly/proposals repository. Filter by `status` (phase-0…phase-5, finished, inactive), `phase` (0–5), `champion` substring, `affects` (finished proposals touching core / js-api / web-api), or `contains` (name/champion substring). Each row carries name, status, phase, champion, affected_specs, spec_version, and the proposal URL.",
+    inputSchema: proposalListSchema,
+    annotations: { readOnlyHint: true },
+  },
+  async (args) => {
+    const r = proposalList(args);
     return { content: [{ type: "text", text: JSON.stringify(r, null, 2) }] };
   },
 );

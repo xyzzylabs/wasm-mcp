@@ -17,6 +17,7 @@
     "dist/versions.js",
     "dist/versions.d.ts",
     "build/wasm-spec-core-main.json",
+    "build/wasm-proposals-main.json",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
