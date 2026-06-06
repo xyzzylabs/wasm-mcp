@@ -1,0 +1,51 @@
+name: deploy-worker
+
+# Deploys the Cloudflare Worker when a v* tag is pushed, or manually
+# via the Actions tab. Requires the CLOUDFLARE_API_TOKEN repository
+# secret (and CLOUDFLARE_ACCOUNT_ID if not set in wrangler.toml).
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: cloudflare
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - run: npm ci
+      # The Worker bundles build/*.json, so the data must exist before
+      # `wrangler deploy` runs (build/ is gitignored).
+      - run: npm run fetch-spec
+      - run: npm run build-spec
+
+      - name: Install worker deps
+        working-directory: worker
+        run: npm ci
+
+      - name: Deploy
+        working-directory: worker
+        run: npx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Smoke test
+        run: |
+          sleep 5
+          curl -fsS https://wasm-mcp.chicoxyzzy.workers.dev/health | tee /dev/stderr | grep -q '"status":"ok"'

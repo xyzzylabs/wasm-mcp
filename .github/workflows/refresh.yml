@@ -1,0 +1,60 @@
+name: refresh
+
+# Auto-refresh: SHA-diff the pinned upstream repos (WebAssembly/spec,
+# WebAssembly/proposals) on a schedule. When a pin has moved, re-pin,
+# bump the patch version, commit, and push a v* tag — which triggers
+# the release (npm) and deploy-worker (Cloudflare) workflows.
+
+on:
+  schedule:
+    # Daily at 06:00 UTC. The Wasm spec moves slowly; daily is ample.
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - run: npm ci
+
+      - name: Check upstream + re-pin
+        id: refresh
+        run: npm run refresh -- --apply
+
+      # The remaining steps only run when a pin actually moved.
+      - name: Rebuild + test against the new pin
+        if: steps.refresh.outputs.moved == 'true'
+        run: |
+          npm run fetch-spec
+          npm run build-spec
+          npm test
+
+      - name: Commit, tag, and push
+        if: steps.refresh.outputs.moved == 'true'
+        env:
+          NEW_VERSION: ${{ steps.refresh.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add vendor/PINNED.txt package.json .last-refresh.json
+          git commit -m "Refresh pinned spec to v${NEW_VERSION}"
+          git tag "v${NEW_VERSION}"
+          git push origin HEAD --tags

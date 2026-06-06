@@ -30,6 +30,7 @@
     "build-spec": "bash scripts/build-spec.sh",
     "parse": "tsx src/parser/cli.ts",
     "mcp": "tsx src/mcp/server.ts",
+    "refresh": "tsx src/refresh/run.ts",
     "test": "vitest run --testTimeout=30000",
     "prepublishOnly": "npm run build && npm test"
   },

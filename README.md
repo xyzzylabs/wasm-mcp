@@ -71,10 +71,32 @@ Wire into Claude Code by adding to your project's `.mcp.json`:
 
 ## Hosted Worker
 
-The Cloudflare Worker deployment (when live) exposes the same tool
+The Cloudflare Worker in [`worker/`](worker/) exposes the same tool
 surface as the stdio package over streamable HTTP at a single
-unauthenticated `/mcp` endpoint, rate-limited per source IP. See
-[`worker/`](worker/) once it lands.
+unauthenticated endpoint, rate-limited per source IP (30 req / 60 s):
+
+```
+https://wasm-mcp.chicoxyzzy.workers.dev/mcp
+```
+
+`GET /health` reports status and the pinned SHAs; `GET /privacy`
+states the anonymous, no-storage posture. All spec data is bundled
+into the Worker, so it does pure in-memory lookups — no storage, no
+network at request time.
+
+## Releases & data refresh
+
+The pinned commits live in [`vendor/PINNED.txt`](vendor/PINNED.txt)
+and are reported by `spec_version`. A scheduled GitHub Actions
+workflow ([`refresh.yml`](.github/workflows/refresh.yml)) SHA-diffs
+the upstream repos daily; when a pin moves it re-pins, bumps the patch
+version, and tags a release, which publishes the npm package
+([`release.yml`](.github/workflows/release.yml)) and redeploys the
+Worker ([`deploy-worker.yml`](.github/workflows/deploy-worker.yml)).
+
+Maintainers: these workflows need the repository secrets `NPM_TOKEN`
+(release) and `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`
+(deploy).
 
 ## License
 

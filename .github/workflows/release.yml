@@ -1,0 +1,37 @@
+name: release
+
+# Publishes the npm package when a v* tag is pushed (by a human or by
+# the refresh workflow). Requires the NPM_TOKEN repository secret.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          registry-url: "https://registry.npmjs.org"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - run: npm ci
+      # Regenerate the baked data from the pinned SHAs so the tarball
+      # ships fresh indexes (build/ is gitignored).
+      - run: npm run fetch-spec
+      - run: npm run build-spec
+      - run: npm test
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
