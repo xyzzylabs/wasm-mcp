@@ -96,7 +96,10 @@ Worker ([`deploy-worker.yml`](.github/workflows/deploy-worker.yml)).
 
 Maintainers: these workflows need the repository secrets `NPM_TOKEN`
 (release) and `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`
-(deploy).
+(deploy). For the refresh workflow's tag push to trigger release +
+deploy, also add a `RELEASE_TOKEN` PAT (`repo` + `workflow` scopes) —
+without it, refresh still re-pins and tags, but you run release /
+deploy manually.
 
 ## License
 

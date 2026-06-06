@@ -9,6 +9,9 @@ on:
 
 permissions:
   contents: read
+  # Required for `npm publish --provenance` to mint a provenance
+  # attestation via GitHub's OIDC.
+  id-token: write
 
 jobs:
   publish:

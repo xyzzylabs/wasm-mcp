@@ -22,7 +22,16 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
+      # A tag pushed with the default GITHUB_TOKEN does NOT trigger
+      # other workflows (GitHub's recursion guard), so the release +
+      # deploy-worker workflows wouldn't fire. Check out with a PAT
+      # (repo secret RELEASE_TOKEN, `repo` + `workflow` scopes) so the
+      # tag push it makes below triggers them. Falls back to the
+      # default token: the re-pin commit + tag still land, but you'd
+      # then run release / deploy manually.
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
       - uses: actions/setup-node@v4
         with:
