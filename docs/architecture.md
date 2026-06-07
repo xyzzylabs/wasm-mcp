@@ -28,13 +28,14 @@ unauthenticated hosted endpoint.
 WebAssembly/spec @ pinned SHA          WebAssembly/proposals @ pinned SHA
         │                                       │
         ▼                                       ▼
- scripts/dump-instructions.py            *.md phase tables
-  (AST-parses index-instructions.py       │
+ src/parser/upstream.ts                  *.md phase tables
+  (parses index-instructions.py           │
    + macros.def — no code executed)       │
         │                                  │
         ▼                                  ▼
  src/parser/instructions.ts        src/parser/proposals.ts
  src/parser/sections.ts  (RST)
+ src/parser/bikeshed.ts  (js/web-api)
  src/parser/types.ts
         │                                  │
         └──────────► src/index/build_spec.ts ◄── build_proposals.ts
@@ -56,10 +57,12 @@ OCaml + SpecTec + Sphinx + LaTeX toolchain.
 
 `wasm-mcp` deliberately avoids that. Instead:
 
-- **Instructions** come from AST-parsing the upstream Python index
+- **Instructions** come from parsing the upstream index source
   (`document/core/appendix/index-instructions.py`) plus the LaTeX
-  macro table (`document/core/util/macros.def`). No upstream code is
-  executed — the Python `ast` module reads the literal data.
+  macro table (`document/core/util/macros.def`) in TypeScript
+  (`src/parser/upstream.ts`). No upstream code is executed — the
+  parser reads the literal `INSTRUCTIONS` list. The whole build is
+  pure TypeScript, no Python toolchain.
 - **Sections** come from parsing the reStructuredText sources
   directly. The prose is kept; the SpecTec splice macros
   (`$${rule: …}`) are recorded as `formal_refs` and linked to the

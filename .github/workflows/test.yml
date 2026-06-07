@@ -24,10 +24,6 @@ jobs:
           node-version: "22"
           cache: npm
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
       - run: npm ci
       - run: npm audit signatures
       - run: npm run fetch-spec
@@ -47,10 +43,6 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
 
       # The Worker bundles + imports build/*.json, so the data must
       # exist before the worker typecheck/tests run.

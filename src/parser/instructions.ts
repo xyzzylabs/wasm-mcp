@@ -1,5 +1,5 @@
 // Normalise the raw instruction + macro JSON dumped by
-// `scripts/dump-instructions.py` into clean, agent-friendly
+// `src/parser/upstream.ts` into clean, agent-friendly
 // `InstructionRecord`s.
 //
 // The upstream `index-instructions.py` uses LaTeX macros for
@@ -90,7 +90,11 @@ export const InstructionRecordSchema = z.object({
   urls: z.object({ validation: z.url(), execution: z.url() }),
 });
 
-interface RawInstruction {
+// Raw upstream-dump shapes (produced by ./upstream.ts). Defined here
+// because this module is node-free (zod only) and is imported by the
+// Worker bundle; upstream.ts — which reads files via node:fs — imports
+// these types from here, so the Worker never pulls in node:fs.
+export interface RawInstruction {
   version: number | null;
   name: string | null;
   opcode: string | null;
@@ -101,7 +105,7 @@ interface RawInstruction {
   validation2: string | null;
   execution2: string | null;
 }
-interface RawMacro {
+export interface RawMacro {
   body: string;
   kind: "instruction" | "type" | "other";
   category: string | null;

@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import {
   parseOpcode,
@@ -11,12 +10,11 @@ import {
   InstructionRecordSchema,
   type RawDump,
 } from "./instructions.js";
-import { BUILD_DIR } from "../paths.js";
+import { extractRawDump } from "./upstream.js";
+import { VENDOR_ROOT } from "../paths.js";
 
 function loadDump(): RawDump {
-  return JSON.parse(
-    readFileSync(resolve(BUILD_DIR, "instructions-raw-main.json"), "utf8"),
-  ) as RawDump;
+  return extractRawDump(resolve(VENDOR_ROOT, "wasm-spec-main"));
 }
 
 describe("parseOpcode", () => {

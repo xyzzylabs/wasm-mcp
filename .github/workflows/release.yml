@@ -25,10 +25,6 @@ jobs:
           cache: npm
           registry-url: "https://registry.npmjs.org"
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
       - run: npm ci
       # Regenerate the baked data from the pinned SHAs so the tarball
       # ships fresh indexes (build/ is gitignored).

@@ -33,7 +33,7 @@ export interface TypeEntry {
   url: string;
 }
 
-/** Raw macro shape as emitted by scripts/dump-instructions.py. */
+/** Raw macro shape as emitted by src/parser/upstream.ts. */
 interface RawMacro {
   body: string;
   kind: "instruction" | "type" | "other";

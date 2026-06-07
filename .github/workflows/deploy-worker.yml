@@ -24,10 +24,6 @@ jobs:
           node-version: "22"
           cache: npm
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-
       - run: npm ci
       # The Worker bundles build/*.json, so the data must exist before
       # `wrangler deploy` runs (build/ is gitignored). The docs-site

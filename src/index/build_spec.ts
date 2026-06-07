@@ -2,9 +2,9 @@
 // each pinned snapshot from three sources, all derived from the
 // vendored WebAssembly/spec checkout:
 //
-//   instructions  ← build/instructions-raw-<branch>.json
-//                   (dumped by scripts/dump-instructions.py, then
-//                    normalised by src/parser/instructions.ts)
+//   instructions  ← document/core/appendix/index-instructions.py +
+//                   util/macros.def, extracted by src/parser/upstream.ts
+//                   and normalised by src/parser/instructions.ts
 //   sections      ← every document/core/**/*.rst parsed by
 //                    src/parser/sections.ts
 //   types         ← the macro table + syntax/types clauses, joined by
@@ -13,16 +13,13 @@
 // Output: build/wasm-spec-core-<branch>.json. The runtime server
 // reads this file; it never re-runs the pipeline.
 
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, statSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { BUILD_DIR, VENDOR_ROOT } from "../paths.js";
 import { readPins } from "../spec/pin.js";
 import { buildArtifactName } from "../spec/catalog.js";
-import {
-  normalizeInstructions,
-  type RawDump,
-  type InstructionRecord,
-} from "../parser/instructions.js";
+import { normalizeInstructions, type InstructionRecord } from "../parser/instructions.js";
+import { extractRawDump } from "../parser/upstream.js";
 import { parseRst, type SpecClause } from "../parser/sections.js";
 import { buildTypeCatalog, type TypeEntry } from "../parser/types.js";
 
@@ -66,11 +63,11 @@ export function bake(branch: string, pinKey: string): BakedSnapshot {
   const pin = readPins().find((p) => p.key === pinKey);
   if (!pin) throw new Error(`No pin for ${pinKey}`);
 
-  const rawPath = resolve(BUILD_DIR, `instructions-raw-${branch}.json`);
-  const dump = JSON.parse(readFileSync(rawPath, "utf8")) as RawDump;
+  const snapshotDir = resolve(VENDOR_ROOT, `wasm-spec-${branch}`);
+  const dump = extractRawDump(snapshotDir);
   const { records, skipped } = normalizeInstructions(dump);
 
-  const coreDir = resolve(VENDOR_ROOT, `wasm-spec-${branch}/document/core`);
+  const coreDir = resolve(snapshotDir, "document/core");
   const sections = parseSections(coreDir);
   const typeClauses = sections.filter((c) => c.path === "syntax/types");
   const types = buildTypeCatalog(dump.macros, typeClauses);
@@ -103,12 +100,6 @@ function main() {
 
   for (const pin of pins) {
     const branch = pin.key.slice("spec/".length);
-    const rawPath = resolve(BUILD_DIR, `instructions-raw-${branch}.json`);
-    if (!existsSync(rawPath)) {
-      console.error(`error: ${rawPath} missing — run scripts/dump-instructions.py first`);
-      process.exitCode = 1;
-      return;
-    }
     const baked = bake(branch, pin.key);
     const out = resolve(BUILD_DIR, buildArtifactName("core", branch as "main"));
     writeFileSync(out, JSON.stringify(baked) + "\n");
