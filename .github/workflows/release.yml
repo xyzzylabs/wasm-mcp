@@ -1,21 +1,32 @@
 name: release
 
 # Publishes the npm package when a v* tag is pushed (by a human or by
-# the refresh workflow). Requires the NPM_TOKEN repository secret.
+# the refresh workflow).
+#
+# Auth is npm Trusted Publishing (OIDC) — NO long-lived NPM_TOKEN. The
+# package must be configured with a trusted publisher pointing at this
+# repo + workflow (npmjs.com → wasm-mcp → Settings → Trusted Publisher
+# → GitHub Actions: org xyzzylabs, repo wasm-mcp, workflow release.yml).
+# CI then mints a short-lived credential at publish time.
 
 on:
   push:
     tags: ["v*"]
 
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: read
-  # Required for `npm publish --provenance` to mint a provenance
-  # attestation via GitHub's OIDC.
+  # Enables the OIDC token request used by both Trusted Publishing and
+  # `npm publish --provenance`.
   id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -23,14 +34,67 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          registry-url: "https://registry.npmjs.org"
+          # Do NOT set `registry-url:` here. setup-node would then write
+          # an .npmrc with a NODE_AUTH_TOKEN auth line that takes
+          # precedence over Trusted Publishing's OIDC path and makes
+          # publish fail with a misleading 404. npm defaults to
+          # registry.npmjs.org anyway.
+
+      - name: Upgrade npm for Trusted Publishing
+        # Node 22 ships npm 10.x; Trusted Publishing (OIDC) needs npm
+        # >= 11.5.1. Pin to a known-good minor rather than @latest.
+        run: npm install -g npm@^11.5
+
+      - name: Verify tag matches package.json version
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          pkg=$(node -p "require('./package.json').version")
+          if [ "$tag" != "$pkg" ]; then
+            echo "Tag $GITHUB_REF_NAME (parsed as $tag) != package.json version $pkg"
+            exit 1
+          fi
+          echo "Tag and version agree on $pkg"
 
       - run: npm ci
       # Regenerate the baked data from the pinned SHAs so the tarball
       # ships fresh indexes (build/ is gitignored).
       - run: npm run fetch-spec
       - run: npm run build-spec
+      - run: npm run typecheck
       - run: npm test
-      - run: npm publish --provenance --access public
+      - run: npm run build
+
+      - name: Publish to npm (Trusted Publishing)
+        # No NODE_AUTH_TOKEN: the npm CLI auto-detects the GitHub Actions
+        # OIDC environment (enabled by id-token: write above) and the
+        # package's trusted-publisher config. `--provenance` signs the
+        # publish into the sigstore transparency log (requires a public
+        # repo). Idempotent: skip if this version is already on the
+        # registry so a re-run after a later failure doesn't error.
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "$(npm view "wasm-mcp@$version" version 2>/dev/null)" = "$version" ]; then
+            echo "wasm-mcp@$version already published — skipping."
+          else
+            npm publish --provenance --access public
+          fi
+
+      - name: Post-publish smoke (install from registry + MCP roundtrip)
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          echo "Waiting for wasm-mcp@$version on the registry..."
+          for i in $(seq 1 10); do
+            [ "$(npm view "wasm-mcp@$version" version 2>/dev/null)" = "$version" ] && break
+            [ "$i" = "10" ] && { echo "Timed out waiting for registry propagation" >&2; exit 1; }
+            sleep 30
+          done
+          printf '%s\n' \
+            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' \
+            '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
+            '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"spec_version","arguments":{}}}' \
+            | npx -y "wasm-mcp@$version" \
+            | grep -q '"spec/main"' && echo "Smoke OK" || { echo "Smoke FAILED" >&2; exit 1; }

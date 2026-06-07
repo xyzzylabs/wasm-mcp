@@ -96,12 +96,17 @@ version, and tags a release, which publishes the npm package
 ([`release.yml`](.github/workflows/release.yml)) and redeploys the
 Worker ([`deploy-worker.yml`](.github/workflows/deploy-worker.yml)).
 
-Maintainers: these workflows need the repository secrets `NPM_TOKEN`
-(release) and `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`
-(deploy). For the refresh workflow's tag push to trigger release +
-deploy, also add a `RELEASE_TOKEN` PAT (`repo` + `workflow` scopes) —
-without it, refresh still re-pins and tags, but you run release /
-deploy manually.
+Maintainers:
+
+- **npm publish** uses [Trusted Publishing](https://docs.npmjs.com/trusted-publishers)
+  (OIDC) — no `NPM_TOKEN`. Configure it once on npmjs.com (wasm-mcp →
+  Settings → Trusted Publisher → GitHub Actions: org `xyzzylabs`, repo
+  `wasm-mcp`, workflow `release.yml`).
+- **Worker deploy** needs `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`.
+- For the refresh workflow's tag push to trigger release + deploy,
+  add a `RELEASE_TOKEN` PAT (`contents: write` + `workflows`) —
+  without it, refresh still re-pins and tags, but you run release /
+  deploy manually.
 
 ## License
 
