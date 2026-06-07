@@ -63,3 +63,12 @@ this docs site along the way.
 
 So the latency from an upstream merge to refreshed data on the hosted
 endpoint and on npm is typically one refresh cycle.
+
+## MCP Registry
+
+Each release also publishes the server manifest
+([`server.json`](https://github.com/xyzzylabs/wasm-mcp/blob/main/server.json))
+to the [MCP Registry](https://registry.modelcontextprotocol.io) under
+`io.github.xyzzylabs/wasm-mcp`, so the server is discoverable from MCP
+client directories. Authentication is OIDC (GitHub Actions identity) —
+no token; the npm package's `mcpName` field proves ownership.

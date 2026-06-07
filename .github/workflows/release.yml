@@ -18,9 +18,11 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
-  # Enables the OIDC token request used by both Trusted Publishing and
-  # `npm publish --provenance`.
+  # `contents: write` for `gh release create`; read alone would do for
+  # npm, but the GitHub Release step below needs write.
+  contents: write
+  # Enables the OIDC token request used by npm Trusted Publishing,
+  # `npm publish --provenance`, and MCP Registry authentication.
   id-token: write
 
 jobs:
@@ -98,3 +100,61 @@ jobs:
             '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"spec_version","arguments":{}}}' \
             | npx -y "wasm-mcp@$version" \
             | grep -q '"spec/main"' && echo "Smoke OK" || { echo "Smoke FAILED" >&2; exit 1; }
+
+      - name: Install mcp-publisher
+        # Prebuilt binary from the MCP Registry's GitHub releases.
+        run: |
+          curl -L \
+            "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" \
+            | tar xz mcp-publisher
+
+      - name: Sync server.json version to the release tag
+        # refresh.yml bumps package.json but not server.json, so keep the
+        # Registry manifest in step with npm. jq idempotently rewrites
+        # both the top-level and the npm package version.
+        env:
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          jq --arg v "$version" \
+            '.version = $v | .packages[0].version = $v' \
+            server.json > server.tmp && mv server.tmp server.json
+          jq '{version, "packages[0].version": .packages[0].version}' server.json
+
+      - name: Validate server.json
+        run: ./mcp-publisher validate
+
+      - name: Authenticate to MCP Registry (OIDC)
+        # No secret — the workflow's id-token: write covers it. The OIDC
+        # sub claim carries the repo identity, which the Registry maps to
+        # the io.github.xyzzylabs/* namespace (matches server.json's name).
+        run: ./mcp-publisher login github-oidc
+
+      - name: Publish to MCP Registry
+        # Republishing the same version is a hard error; bump version to
+        # re-run. The Registry cross-checks the npm package's `mcpName`
+        # field against server.json's name to prove ownership.
+        run: ./mcp-publisher publish
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "Release $GITHUB_REF_NAME already exists — skipping."
+            exit 0
+          fi
+          # Notes = this version's CHANGELOG section (## 0.1.0 … up to the
+          # next ## heading); fall back to a generic note for cron PATCH
+          # bumps that don't write a CHANGELOG entry.
+          notes=$(awk -v ver="$version" '
+            $0 ~ "^## (\\[)?"ver"(\\])?" { found=1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md)
+          if [ -z "$(echo "$notes" | tr -d '[:space:]')" ]; then
+            notes="Automated PATCH refresh — upstream WebAssembly/spec or proposals moved. Same code, new spec data. See \`spec_version\` for the current SHAs."
+          fi
+          gh release create "$GITHUB_REF_NAME" --title "v$version" --notes "$notes" --verify-tag
