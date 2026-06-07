@@ -105,9 +105,10 @@ Maintainers:
   `wasm-mcp`, workflow `release.yml`).
 - **Worker deploy** needs `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`.
 - For the refresh workflow's tag push to trigger release + deploy,
-  add a `RELEASE_TOKEN` PAT (`contents: write` + `workflows`) —
+  add a `WORKFLOW_PAT` PAT (`contents: write` + `workflows`) —
   without it, refresh still re-pins and tags, but you run release /
-  deploy manually.
+  deploy manually. (Same secret name tc39-mcp uses, so one PAT — or an
+  `xyzzylabs` org secret — can serve both repos.)
 
 ## License
 
