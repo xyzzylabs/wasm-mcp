@@ -123,13 +123,14 @@ Look up a WebAssembly type or type form by name: concrete value types (`i32`, `i
 
 ## section_get
 
-Fetch one spec clause by id or anchor (e.g. `syntax-numtype`, `valid-unreachable`, `exec-nop`, `binary-instr`, `text-instr`) — matching the rendered spec's stable fragment ids. Returns the clause title, cleaned prose, `:ref:` cross-references, the SpecTec `formal_refs` it cites, and the rendered URL. Validation/execution clauses are SpecTec-generated: prose may be terse, but formal_refs + url point to the formal rule.
+Fetch one spec clause by id or anchor, across `core` / `js-api` / `web-api` (set `spec`). For core: `syntax-numtype`, `valid-unreachable`, `binary-instr`, … For the embedding specs: `modules`, `memories`, `streaming-modules`, … Matches the rendered spec's stable fragment ids. Returns the clause title, cleaned prose, cross-references, the SpecTec `formal_refs` it cites (core), and the rendered URL. Core validation/execution clauses are SpecTec-generated: prose may be terse, but formal_refs + url point to the formal rule.
 
 **Title:** Get spec section
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `id` | string | yes | Clause id or anchor, e.g. `syntax-numtype`, `valid-unreachable`, `exec-nop`, `binary-instr`, `text-instr`. These match the stable fragment ids in the rendered spec. |
+| `id` | string | yes | Clause id or anchor. For `core`: `syntax-numtype`, `valid-unreachable`, `binary-instr`, … For `js-api` / `web-api`: `modules`, `memories`, `streaming-modules`, … These match the stable fragment ids in the rendered spec. |
+| `spec` | `core` \| `js-api` \| `web-api` | no | Which WebAssembly spec to query: `core` (default; instructions, types, validation, execution, formats), `js-api` (JavaScript embedding), or `web-api` (Web platform integration). _(default: `core`)_ |
 | `version` | `main` \| `latest` | no | WebAssembly spec version to query. `latest` (default) is the current served version; `main` is the upstream working draft. _(default: `latest`)_ |
 
 **Examples**
@@ -147,12 +148,13 @@ Fetch one spec clause by id or anchor (e.g. `syntax-numtype`, `valid-unreachable
 
 ## section_list
 
-Enumerate spec clauses for navigation, filterable by source `path` (`intro`, `syntax`, `valid`, `exec`, `binary`, `text`, `appendix`, or sub-paths like `syntax/types`), `anchor_prefix` (`syntax-`, `valid-`, …), `titled_only`, and `max_level`. Returns lightweight rows {id, anchors, title, level, path, url}; follow up with section_get.
+Enumerate spec clauses for navigation, across `core` / `js-api` / `web-api` (set `spec`). Filter by source `path` (core: `intro`, `syntax`, `valid`, `exec`, `binary`, `text`, `appendix`, or sub-paths like `syntax/types`), `anchor_prefix`, `titled_only`, and `max_level`. Returns lightweight rows {id, anchors, title, level, path, url}; follow up with section_get.
 
 **Title:** List spec sections
 
 | Field | Type | Required | Description |
 |---|---|---|---|
+| `spec` | `core` \| `js-api` \| `web-api` | no | Which WebAssembly spec to query: `core` (default; instructions, types, validation, execution, formats), `js-api` (JavaScript embedding), or `web-api` (Web platform integration). _(default: `core`)_ |
 | `path` | string | no | Filter to a source path / prefix. Top-level areas: `intro`, `syntax` (structure), `valid` (validation), `exec` (execution), `binary`, `text`, `appendix`. Sub-paths like `syntax/types` also work. |
 | `anchor_prefix` | string | no | Filter to clauses whose id/anchor starts with this prefix, e.g. `syntax-`, `valid-`, `exec-`. |
 | `titled_only` | boolean | no | Drop anchor-only content blocks (keep only clauses with a heading). _(default: `false`)_ |
@@ -174,13 +176,14 @@ Enumerate spec clauses for navigation, filterable by source `path` (`intro`, `sy
 
 ## spec_search
 
-Full-text search across the spec section index — clause anchors/ids, titles, and prose. The entry point when you don't know the exact anchor. Returns ranked hits with a `matched_on` field (anchor-exact > title > anchor > prose) and a prose snippet for body matches; follow up with section_get.
+Full-text search across the section index of a spec (`core` / `js-api` / `web-api`, set `spec`) — clause anchors/ids, titles, and prose. The entry point when you don't know the exact anchor. Returns ranked hits with a `matched_on` field (anchor-exact > title > anchor > prose) and a prose snippet for body matches; follow up with section_get.
 
 **Title:** Search spec
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| `query` | string | yes | Search text. Matched against clause anchors/ids, titles, and prose. E.g. `block type`, `trap`, `funcref`, `little endian`. |
+| `query` | string | yes | Search text. Matched against clause anchors/ids, titles, and prose. E.g. `block type`, `trap`, `funcref`, `streaming compilation`. |
+| `spec` | `core` \| `js-api` \| `web-api` | no | Which WebAssembly spec to query: `core` (default; instructions, types, validation, execution, formats), `js-api` (JavaScript embedding), or `web-api` (Web platform integration). _(default: `core`)_ |
 | `limit` | number | no | Max ranked hits returned. _(default: `20`)_ |
 | `version` | `main` \| `latest` | no | WebAssembly spec version to query. `latest` (default) is the current served version; `main` is the upstream working draft. _(default: `latest`)_ |
 

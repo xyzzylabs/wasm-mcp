@@ -28,7 +28,10 @@ features:
     details: 497 instructions with binary opcodes, stack type signatures, categories (numeric, vector, reference, control, memory, …), introducing version (1.0 / 2.0 / 3.0), and validation + execution anchors. Look up by mnemonic (i32.add) or opcode (0x6a).
   - icon: 📖
     title: Sections, types & proposals
-    details: 972 anchor-addressable spec clauses with cleaned prose and cross-references, a 47-entry type catalog (value types + type forms), and the full WebAssembly/proposals phase list.
+    details: 972 anchor-addressable core clauses with cleaned prose and cross-references, a 47-entry type catalog (value types + type forms), and the full WebAssembly/proposals phase list.
+  - icon: 🌐
+    title: Core + JS-API + Web-API
+    details: section_get, section_list, and spec_search span all three specs in the WebAssembly/spec repo via a `spec` argument — the core language, the JavaScript embedding API (WebAssembly.instantiate, Module, Memory, …), and the Web-platform integration (streaming compilation).
   - icon: 🎯
     title: Deterministic over pinned data
     details: All data is fetched and indexed at build time from a pinned commit of WebAssembly/spec and baked into the package. Same input → same output. No network at request time.

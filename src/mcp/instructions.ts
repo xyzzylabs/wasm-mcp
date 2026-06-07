@@ -31,11 +31,18 @@ Common workflow:
      'funcref', 'functype', 'limits') with its defining clause prose.
   6. \`spec_search { query }\` — full-text search across clause
      anchors, titles, and prose when you don't know the anchor.
-  7. \`section_get { id }\` — one spec clause by anchor (e.g.
+  7. \`section_get { id, spec? }\` — one spec clause by anchor (e.g.
      'syntax-numtype', 'valid-unreachable'): prose, cross-refs,
      SpecTec formal-rule references, and the rendered URL.
-  8. \`section_list { path? }\` — navigate the clause tree, scoped to
-     an area ('syntax', 'valid', 'exec', 'binary', 'text', 'appendix').
+  8. \`section_list { spec?, path? }\` — navigate the clause tree,
+     scoped to an area ('syntax', 'valid', 'exec', 'binary', 'text',
+     'appendix').
+
+The section tools (section_get / section_list / spec_search) cover
+three specs via a 'spec' argument: 'core' (default — the instruction
+set, validation, execution, binary + text formats), 'js-api' (the
+JavaScript embedding API), and 'web-api' (Web-platform integration).
+The instruction and type tools are 'core'-only.
   9. \`proposal_list { status? }\` — WebAssembly proposals and their
      phases, from the pinned WebAssembly/proposals repo.
 

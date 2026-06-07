@@ -103,7 +103,7 @@ export const TOOLS: ToolMeta[] = [
     name: "section_get",
     title: "Get spec section",
     description:
-      "Fetch one spec clause by id or anchor (e.g. `syntax-numtype`, `valid-unreachable`, `exec-nop`, `binary-instr`, `text-instr`) — matching the rendered spec's stable fragment ids. Returns the clause title, cleaned prose, `:ref:` cross-references, the SpecTec `formal_refs` it cites, and the rendered URL. Validation/execution clauses are SpecTec-generated: prose may be terse, but formal_refs + url point to the formal rule.",
+      "Fetch one spec clause by id or anchor, across `core` / `js-api` / `web-api` (set `spec`). For core: `syntax-numtype`, `valid-unreachable`, `binary-instr`, … For the embedding specs: `modules`, `memories`, `streaming-modules`, … Matches the rendered spec's stable fragment ids. Returns the clause title, cleaned prose, cross-references, the SpecTec `formal_refs` it cites (core), and the rendered URL. Core validation/execution clauses are SpecTec-generated: prose may be terse, but formal_refs + url point to the formal rule.",
     inputSchema: sectionGetSchema,
     examples: sectionGetExamples,
     handler: (a) => sectionGet(a as { id: string }),
@@ -112,7 +112,7 @@ export const TOOLS: ToolMeta[] = [
     name: "section_list",
     title: "List spec sections",
     description:
-      "Enumerate spec clauses for navigation, filterable by source `path` (`intro`, `syntax`, `valid`, `exec`, `binary`, `text`, `appendix`, or sub-paths like `syntax/types`), `anchor_prefix` (`syntax-`, `valid-`, …), `titled_only`, and `max_level`. Returns lightweight rows {id, anchors, title, level, path, url}; follow up with section_get.",
+      "Enumerate spec clauses for navigation, across `core` / `js-api` / `web-api` (set `spec`). Filter by source `path` (core: `intro`, `syntax`, `valid`, `exec`, `binary`, `text`, `appendix`, or sub-paths like `syntax/types`), `anchor_prefix`, `titled_only`, and `max_level`. Returns lightweight rows {id, anchors, title, level, path, url}; follow up with section_get.",
     inputSchema: sectionListSchema,
     examples: sectionListExamples,
     handler: (a) => sectionList(a),
@@ -121,7 +121,7 @@ export const TOOLS: ToolMeta[] = [
     name: "spec_search",
     title: "Search spec",
     description:
-      "Full-text search across the spec section index — clause anchors/ids, titles, and prose. The entry point when you don't know the exact anchor. Returns ranked hits with a `matched_on` field (anchor-exact > title > anchor > prose) and a prose snippet for body matches; follow up with section_get.",
+      "Full-text search across the section index of a spec (`core` / `js-api` / `web-api`, set `spec`) — clause anchors/ids, titles, and prose. The entry point when you don't know the exact anchor. Returns ranked hits with a `matched_on` field (anchor-exact > title > anchor > prose) and a prose snippet for body matches; follow up with section_get.",
     inputSchema: specSearchSchema,
     examples: specSearchExamples,
     handler: (a) => specSearch(a as { query: string }),

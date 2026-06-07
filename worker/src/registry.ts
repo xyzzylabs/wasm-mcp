@@ -5,7 +5,7 @@
 // logic lives in those shared modules — only the thin arg-mapping and
 // the schema shape live here.
 
-import { SPEC, PROPOSALS } from "./data.js";
+import { SPEC, PROPOSALS, sectionsFor } from "./data.js";
 import {
   getInstruction,
   listInstructions,
@@ -16,6 +16,12 @@ import { getType } from "../../src/parser/types.js";
 import { listProposals } from "../../src/spec/proposals_query.js";
 import { INSTRUCTION_CATEGORIES, WASM_VERSIONS } from "../../src/parser/instructions.js";
 import { PROPOSAL_STATUSES } from "../../src/parser/proposals.js";
+import { SPEC_NAMES, type SpecName } from "../../src/spec/catalog.js";
+
+function specOf(a: Record<string, unknown>): SpecName {
+  const s = a.spec;
+  return (SPEC_NAMES as readonly string[]).includes(s as string) ? (s as SpecName) : "core";
+}
 
 export interface ToolDef {
   name: string;
@@ -110,22 +116,26 @@ export const TOOL_REGISTRY: ToolDef[] = [
   {
     name: "section_get",
     description:
-      "Fetch one spec clause by id or anchor (`syntax-numtype`, `valid-unreachable`, `binary-instr`, …): title, prose, cross-references, SpecTec formal refs, and rendered URL.",
-    inputSchema: obj({ id: str("Clause id or anchor.") }, ["id"]),
-    handler: (a) => getClause(SPEC.sections, a.id as string),
+      "Fetch one spec clause by id or anchor across `core` / `js-api` / `web-api` (`syntax-numtype`, `valid-unreachable`, `modules`, `streaming-modules`, …): title, prose, cross-references, SpecTec formal refs, and rendered URL.",
+    inputSchema: obj(
+      { id: str("Clause id or anchor."), spec: { type: "string", enum: [...SPEC_NAMES], description: "Which spec (default core)." } },
+      ["id"],
+    ),
+    handler: (a) => getClause(sectionsFor(specOf(a)), a.id as string),
   },
   {
     name: "section_list",
     description:
-      "Navigate the clause tree, filterable by source `path` (`syntax`, `valid`, `exec`, `binary`, `text`, `appendix`), `anchor_prefix`, `titled_only`, and `max_level`.",
+      "Navigate the clause tree of a spec (`core` / `js-api` / `web-api`), filterable by source `path` (`syntax`, `valid`, `exec`, `binary`, `text`, `appendix`), `anchor_prefix`, `titled_only`, and `max_level`.",
     inputSchema: obj({
+      spec: { type: "string", enum: [...SPEC_NAMES], description: "Which spec (default core)." },
       path: str("Source path / prefix."),
       anchor_prefix: str("Id/anchor prefix."),
       titled_only: { type: "boolean", description: "Drop anchor-only blocks." },
       max_level: int("Cap heading depth.", 1, 6),
     }),
     handler: (a) => {
-      const sections = listSections(SPEC.sections, {
+      const sections = listSections(sectionsFor(specOf(a)), {
         path: a.path as string | undefined,
         anchor_prefix: a.anchor_prefix as string | undefined,
         titled_only: a.titled_only as boolean | undefined,
@@ -137,10 +147,17 @@ export const TOOL_REGISTRY: ToolDef[] = [
   {
     name: "spec_search",
     description:
-      "Full-text search across clause anchors, titles, and prose. Ranked anchor-exact > title > anchor > prose, with snippets for body matches.",
-    inputSchema: obj({ query: str("Search text."), limit: int("Max hits.", 1, 100) }, ["query"]),
+      "Full-text search across clause anchors, titles, and prose of a spec (`core` / `js-api` / `web-api`). Ranked anchor-exact > title > anchor > prose, with snippets for body matches.",
+    inputSchema: obj(
+      {
+        query: str("Search text."),
+        spec: { type: "string", enum: [...SPEC_NAMES], description: "Which spec (default core)." },
+        limit: int("Max hits.", 1, 100),
+      },
+      ["query"],
+    ),
     handler: (a) => {
-      const hits = searchSpec(SPEC.sections, a.query as string, (a.limit as number) ?? 20);
+      const hits = searchSpec(sectionsFor(specOf(a)), a.query as string, (a.limit as number) ?? 20);
       return { count: hits.length, hits };
     },
   },

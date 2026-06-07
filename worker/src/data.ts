@@ -7,11 +7,14 @@
 
 import specJson from "../../build/wasm-spec-core-main.json";
 import proposalsJson from "../../build/wasm-proposals-main.json";
+import jsApiJson from "../../build/wasm-sections-js-api-main.json";
+import webApiJson from "../../build/wasm-sections-web-api-main.json";
 
 import type { InstructionRecord } from "../../src/parser/instructions.js";
 import type { SpecClause } from "../../src/parser/sections.js";
 import type { TypeEntry } from "../../src/parser/types.js";
 import type { Proposal } from "../../src/parser/proposals.js";
+import type { SpecName } from "../../src/spec/catalog.js";
 
 interface SpecSnapshot {
   pin: { key: string; sha: string; spec: "core"; version: string };
@@ -24,6 +27,21 @@ interface ProposalsSnapshot {
   pin: { key: string; sha: string; repo: "proposals"; version: string };
   proposals: Proposal[];
 }
+interface SectionsSnapshot {
+  pin: { key: string; sha: string; spec: SpecName; version: string };
+  sections: SpecClause[];
+}
 
 export const SPEC = specJson as unknown as SpecSnapshot;
 export const PROPOSALS = proposalsJson as unknown as ProposalsSnapshot;
+
+const AUX_SECTIONS: Record<Exclude<SpecName, "core">, SpecClause[]> = {
+  "js-api": (jsApiJson as unknown as SectionsSnapshot).sections,
+  "web-api": (webApiJson as unknown as SectionsSnapshot).sections,
+};
+
+/** Sections for any spec: core from the unified snapshot, js-api /
+ *  web-api from their bundled section artifacts. */
+export function sectionsFor(spec: SpecName): SpecClause[] {
+  return spec === "core" ? SPEC.sections : AUX_SECTIONS[spec];
+}

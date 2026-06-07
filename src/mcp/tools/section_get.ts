@@ -4,10 +4,11 @@
 // SpecTec formal-rule names it references, and the rendered URL.
 
 import { z } from "zod";
-import { versionArg } from "../_args.js";
+import { versionArg, specArg } from "../_args.js";
 import { loadSections } from "../../spec/spec_data.js";
 import { getClause } from "../../spec/sections_query.js";
 import type { SpecClause } from "../../parser/sections.js";
+import type { SpecName } from "../../spec/catalog.js";
 import type { VersionValue } from "../../versions.js";
 
 export const sectionGetSchema = {
@@ -15,12 +16,13 @@ export const sectionGetSchema = {
     .string()
     .min(1)
     .describe(
-      "Clause id or anchor, e.g. `syntax-numtype`, `valid-unreachable`, `exec-nop`, `binary-instr`, `text-instr`. These match the stable fragment ids in the rendered spec.",
+      "Clause id or anchor. For `core`: `syntax-numtype`, `valid-unreachable`, `binary-instr`, … For `js-api` / `web-api`: `modules`, `memories`, `streaming-modules`, … These match the stable fragment ids in the rendered spec.",
     ),
+  spec: specArg,
   version: versionArg,
 };
 
-export type SectionGetArgs = { id: string; version?: VersionValue };
+export type SectionGetArgs = { id: string; spec?: SpecName; version?: VersionValue };
 
 export const sectionGetExamples = [
   {
@@ -36,6 +38,6 @@ export const sectionGetExamples = [
 ];
 
 export function sectionGet(args: SectionGetArgs): SpecClause | null {
-  const sections = loadSections(args.version);
+  const sections = loadSections(args.spec ?? "core", args.version);
   return getClause(sections, args.id);
 }

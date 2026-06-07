@@ -5,12 +5,14 @@
 // follow up with section_get.
 
 import { z } from "zod";
-import { versionArg } from "../_args.js";
+import { versionArg, specArg } from "../_args.js";
 import { loadSections } from "../../spec/spec_data.js";
 import { listSections, type SectionSummary } from "../../spec/sections_query.js";
+import type { SpecName } from "../../spec/catalog.js";
 import type { VersionValue } from "../../versions.js";
 
 export const sectionListSchema = {
+  spec: specArg,
   path: z
     .string()
     .min(1)
@@ -38,6 +40,7 @@ export const sectionListSchema = {
 };
 
 export type SectionListArgs = {
+  spec?: SpecName;
   path?: string;
   anchor_prefix?: string;
   titled_only?: boolean;
@@ -64,7 +67,7 @@ export interface SectionListResult {
 }
 
 export function sectionList(args: SectionListArgs): SectionListResult {
-  const sections = loadSections(args.version);
+  const sections = loadSections(args.spec ?? "core", args.version);
   const out = listSections(sections, {
     path: args.path,
     anchor_prefix: args.anchor_prefix,

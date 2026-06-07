@@ -26,10 +26,11 @@ parallel under `/document/`:
 - `web-api` — additional Web-platform integration (streaming
   compilation, `fetch` integration).
 
-All three share one pinned commit. `core` is the first-class target;
-`js-api` and `web-api` are added in a later release via the same
-`section_get` / `clause_get` / `spec_search` surface. The
-instruction tools are intrinsically `core`-only.
+All three share one pinned commit. `core` (reStructuredText +
+SpecTec) is the first-class target; `js-api` and `web-api` (Bikeshed)
+are covered by the `section_get` / `section_list` / `spec_search`
+tools via a `spec` argument. The instruction and type tools are
+intrinsically `core`-only.
 
 The server is the product. Tools, dependencies, and documentation
 should read as if written for any reader interested in the

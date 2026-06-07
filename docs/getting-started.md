@@ -55,6 +55,8 @@ Once connected, try:
   what relaxed-SIMD instructions did Wasm 3.0 add?
 - `type_get { "name": "funcref" }` — classification + sibling types.
 - `spec_search { "query": "trap" }` — find clauses by text.
+- `section_get { "id": "memories", "spec": "js-api" }` — read a
+  JavaScript-embedding clause (the `spec` arg also takes `web-api`).
 - `proposal_list { "status": "finished", "affects": "core" }` — what
   landed in the core spec.
 

@@ -6,7 +6,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { BUILD_DIR } from "../paths.js";
-import { buildArtifactName } from "./catalog.js";
+import { buildArtifactName, sectionsArtifactName, type SpecName } from "./catalog.js";
 import { resolveVersion, type VersionValue } from "../versions.js";
 import type { InstructionRecord } from "../parser/instructions.js";
 import type { SpecClause } from "../parser/sections.js";
@@ -52,9 +52,33 @@ export function loadSnapshot(version?: VersionValue): LoadedSnapshot {
 export function loadInstructions(version?: VersionValue): InstructionRecord[] {
   return loadSnapshot(version).instructions;
 }
-export function loadSections(version?: VersionValue): SpecClause[] {
-  return loadSnapshot(version).sections;
+/**
+ * Load the section index for a given spec. `core` comes from the
+ * unified core snapshot; `js-api` / `web-api` come from their own
+ * baked Bikeshed artifacts (separate files, same upstream pin).
+ */
+export function loadSections(spec: SpecName = "core", version?: VersionValue): SpecClause[] {
+  if (spec === "core") return loadSnapshot(version).sections;
+  const v = resolveVersion(version);
+  const key = `${spec}:${v}`;
+  const cached = auxSectionsCache.get(key);
+  if (cached) return cached;
+  const file = resolve(BUILD_DIR, sectionsArtifactName(spec, v));
+  let raw: string;
+  try {
+    raw = readFileSync(file, "utf8");
+  } catch (err) {
+    throw new Error(
+      `Baked sections artifact not found: ${file}. ` +
+        `Run \`npm run fetch-spec && npm run build-spec\` to generate it. (${String(err)})`,
+    );
+  }
+  const parsed = JSON.parse(raw) as { sections: SpecClause[] };
+  auxSectionsCache.set(key, parsed.sections);
+  return parsed.sections;
 }
+
+const auxSectionsCache = new Map<string, SpecClause[]>();
 export function loadTypes(version?: VersionValue): TypeEntry[] {
   return loadSnapshot(version).types;
 }

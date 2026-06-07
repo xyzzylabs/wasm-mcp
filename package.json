@@ -17,6 +17,8 @@
     "dist/versions.js",
     "dist/versions.d.ts",
     "build/wasm-spec-core-main.json",
+    "build/wasm-sections-js-api-main.json",
+    "build/wasm-sections-web-api-main.json",
     "build/wasm-proposals-main.json",
     "README.md",
     "LICENSE",

@@ -3,6 +3,21 @@
 
 import { z } from "zod";
 import { VERSION_VALUES } from "../versions.js";
+import { SPEC_NAMES } from "../spec/catalog.js";
+
+/**
+ * Which WebAssembly specification to query. `core` (default) is the
+ * instruction set / validation / execution / formats; `js-api` and
+ * `web-api` are the JavaScript + Web embedding specs. Only the
+ * section/search tools are spec-aware — instruction and type tools are
+ * `core`-only.
+ */
+export const specArg = z
+  .enum(SPEC_NAMES)
+  .default("core")
+  .describe(
+    "Which WebAssembly spec to query: `core` (default; instructions, types, validation, execution, formats), `js-api` (JavaScript embedding), or `web-api` (Web platform integration).",
+  );
 
 /**
  * The spec version selector. `latest` (default) resolves to the

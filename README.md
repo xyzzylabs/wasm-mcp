@@ -30,9 +30,11 @@ unauthenticated endpoint.
   pinned `WebAssembly/proposals` repo), filterable by status, phase,
   champion, or affected spec.
 
-Planned for a later release:
-
-- `js-api` / `web-api` coverage via the same section/search tools.
+`section_get`, `section_list`, and `spec_search` take a `spec`
+argument covering all three specs in the `WebAssembly/spec` repo:
+`core` (default), `js-api` (the JavaScript embedding API), and
+`web-api` (Web-platform integration). The instruction and type tools
+are `core`-only.
 
 ## Contract
 

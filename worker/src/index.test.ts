@@ -63,6 +63,17 @@ describe("dispatch", () => {
     expect(JSON.parse(text).kind).toBe("reference");
   });
 
+  it("tools/call section_get routes to js-api when spec=js-api", () => {
+    const r = dispatch({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "tools/call",
+      params: { name: "section_get", arguments: { id: "memories", spec: "js-api" } },
+    });
+    const text = (r.result as { content: { text: string }[] }).content[0]!.text;
+    expect(JSON.parse(text).path).toBe("js-api");
+  });
+
   it("tools/call spec_search finds block types", () => {
     const r = dispatch({
       jsonrpc: "2.0",

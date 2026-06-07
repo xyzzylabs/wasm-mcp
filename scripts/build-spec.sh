@@ -39,6 +39,9 @@ done
 echo "==> Building unified baked artifacts (instructions + sections + types)" >&2
 npx --no-install tsx src/index/build_spec.ts
 
+echo "==> Building auxiliary spec sections (js-api, web-api)" >&2
+npx --no-install tsx src/index/build_aux_specs.ts
+
 if find vendor -maxdepth 1 -type d -name 'wasm-proposals-*' | read -r _; then
   echo "==> Building proposals index" >&2
   npx --no-install tsx src/index/build_proposals.ts
