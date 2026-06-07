@@ -6,7 +6,7 @@
   "description": "Unofficial MCP server for the WebAssembly core specification — SHA-pinned instructions, types, sections, and search. Not affiliated with the W3C WebAssembly CG.",
   "type": "module",
   "bin": {
-    "wasm-mcp": "./dist/mcp/server.js"
+    "wasm-mcp": "dist/mcp/server.js"
   },
   "files": [
     "dist/mcp/",
