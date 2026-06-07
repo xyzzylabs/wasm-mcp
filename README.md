@@ -12,8 +12,9 @@ unauthenticated endpoint.
 
 - `spec_version` — the pinned upstream commit and package version.
 - `instruction_get` — opcode bytes, category, introducing version,
-  stack type signature, and validation + execution prose anchors /
-  URLs, by mnemonic (`i32.add`) or binary opcode (`0x6a`).
+  stack type signature, validation + execution prose anchors / URLs,
+  and trap conditions (`traps` + `can_trap`), by mnemonic (`i32.add`)
+  or binary opcode (`0x6a`).
 - `instruction_list` — enumerate, filterable by category (numeric,
   vector, reference, parametric, variable, table, memory, control,
   ref, i31, struct, array, extern), introducing version, or prefix.

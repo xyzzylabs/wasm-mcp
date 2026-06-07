@@ -52,6 +52,33 @@ describe("dispatch", () => {
     expect(JSON.parse(text).opcodes).toEqual([0x6a]);
   });
 
+  it("tools/call instruction_get surfaces trap conditions", () => {
+    const r = dispatch({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "tools/call",
+      params: { name: "instruction_get", arguments: { mnemonic: "i32.div_s" } },
+    });
+    const rec = JSON.parse((r.result as { content: { text: string }[] }).content[0]!.text);
+    expect(rec.can_trap).toBe(true);
+    expect(rec.traps.map((t: { name: string }) => t.name)).toEqual([
+      "integer divide by zero",
+      "integer overflow",
+    ]);
+  });
+
+  it("tools/call instruction_list filters by can_trap", () => {
+    const r = dispatch({
+      jsonrpc: "2.0",
+      id: 1,
+      method: "tools/call",
+      params: { name: "instruction_list", arguments: { can_trap: true } },
+    });
+    const out = JSON.parse((r.result as { content: { text: string }[] }).content[0]!.text);
+    expect(out.count).toBeGreaterThan(50);
+    expect(out.instructions.every((i: { can_trap: boolean }) => i.can_trap === true)).toBe(true);
+  });
+
   it("tools/call type_get resolves funcref", () => {
     const r = dispatch({
       jsonrpc: "2.0",

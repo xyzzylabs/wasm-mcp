@@ -28,6 +28,12 @@ export const instructionListSchema = {
     .min(1)
     .optional()
     .describe("Filter to mnemonics starting with this prefix, e.g. `i32.` or `v128.`. Case-insensitive."),
+  can_trap: z
+    .boolean()
+    .optional()
+    .describe(
+      "Filter by trapping behavior: `true` keeps only instructions that can trap at runtime, `false` keeps only those that never trap. See instruction_get for the per-instruction trap conditions.",
+    ),
   version: versionArg,
 };
 
@@ -35,6 +41,7 @@ export type InstructionListArgs = {
   category?: InstructionCategory;
   introduced_in?: (typeof WASM_VERSIONS)[number];
   prefix?: string;
+  can_trap?: boolean;
   version?: VersionValue;
 };
 
@@ -54,6 +61,11 @@ export const instructionListExamples = [
     input: { prefix: "i32." },
     note: "Prefix filter is the quickest way to scope to one type family.",
   },
+  {
+    q: "Which instructions can trap?",
+    input: { can_trap: true },
+    note: "can_trap filters to the finite trapping set; each row's can_trap mirrors instruction_get's traps.",
+  },
 ];
 
 export interface InstructionListResult {
@@ -67,6 +79,7 @@ export function instructionList(args: InstructionListArgs): InstructionListResul
     category: args.category,
     version: args.introduced_in,
     prefix: args.prefix,
+    can_trap: args.can_trap,
   });
   return { count: instructions.length, instructions };
 }

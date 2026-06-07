@@ -16,6 +16,25 @@ PATCH releases are noted here briefly; the pinned SHAs live in
 [`vendor/PINNED.txt`](vendor/PINNED.txt) and are reported by the
 `spec_version` tool.
 
+## 0.2.0
+
+### Added
+
+- `instruction_get` now returns per-instruction **trap conditions**: a
+  `traps` array (each `{ condition, name }`, with the spec's canonical
+  trap name) plus a `can_trap` boolean. Empty for instructions that
+  never trap (e.g. `i32.add`). Covers the finite trapping set —
+  integer `div`/`rem`, non-saturating float→int `trunc` (not
+  `trunc_sat`), memory loads/stores + bulk ops, table ops,
+  `call_indirect`, `unreachable`, and the single-condition reference
+  instructions. Derived at build time from the pinned spec; trap names
+  verified against the spec's own `test/core/*.wast` `assert_trap`
+  messages.
+- `instruction_list` gains a `can_trap` filter, and its rows now carry
+  `can_trap`.
+
+Pin unchanged.
+
 ## 0.1.0 — initial release
 
 ### Added

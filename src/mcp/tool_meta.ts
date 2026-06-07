@@ -67,7 +67,7 @@ export const TOOLS: ToolMeta[] = [
     name: "instruction_get",
     title: "Get instruction",
     description:
-      "Fetch one WebAssembly instruction by mnemonic (`i32.add`, `br_if`) or binary opcode (`0x6a`, `0xfd 0x89 0x02`) as structured JSON: opcode bytes, category, introducing version, stack type signature, and validation/execution prose anchors + spec URLs. Provide `mnemonic` or `opcode` (mnemonic wins if both match).",
+      "Fetch one WebAssembly instruction by mnemonic (`i32.add`, `br_if`) or binary opcode (`0x6a`, `0xfd 0x89 0x02`) as structured JSON: opcode bytes, category, introducing version, stack type signature, validation/execution prose anchors + spec URLs, and `traps` — the runtime conditions under which it traps (each with the spec's canonical trap name; empty + `can_trap: false` for instructions that never trap). Provide `mnemonic` or `opcode` (mnemonic wins if both match).",
     inputSchema: instructionGetSchema,
     examples: instructionGetExamples,
     handler: (a) => instructionGet(a),
@@ -76,7 +76,7 @@ export const TOOLS: ToolMeta[] = [
     name: "instruction_list",
     title: "List instructions",
     description:
-      "Enumerate WebAssembly instructions with optional filters: `category` (control, numeric, parametric, variable, table, memory, ref, i31, struct, array, extern, vec), `introduced_in` (1.0 | 2.0 | 3.0), and `prefix` (mnemonic prefix like `i32.`). Returns lightweight rows sorted by opcode; follow up with instruction_get for full detail.",
+      "Enumerate WebAssembly instructions with optional filters: `category` (control, numeric, parametric, variable, table, memory, ref, i31, struct, array, extern, vec), `introduced_in` (1.0 | 2.0 | 3.0), `prefix` (mnemonic prefix like `i32.`), and `can_trap` (only trapping / only non-trapping instructions). Returns lightweight rows (incl. `can_trap`) sorted by opcode; follow up with instruction_get for full detail incl. trap conditions.",
     inputSchema: instructionListSchema,
     examples: instructionListExamples,
     handler: (a) => instructionList(a),

@@ -62,7 +62,7 @@ export const TOOL_REGISTRY: ToolDef[] = [
   {
     name: "instruction_get",
     description:
-      "Fetch one WebAssembly instruction by mnemonic (`i32.add`) or binary opcode (`0x6a`, multi-byte `0xfd 0x89 0x02`): opcode bytes, category, introducing version, stack type signature, validation/execution anchors + URLs.",
+      "Fetch one WebAssembly instruction by mnemonic (`i32.add`) or binary opcode (`0x6a`, multi-byte `0xfd 0x89 0x02`): opcode bytes, category, introducing version, stack type signature, validation/execution anchors + URLs, and `traps` (runtime trap conditions with canonical names; empty + `can_trap:false` when it never traps).",
     inputSchema: obj({
       mnemonic: str("Instruction mnemonic, e.g. `i32.add`. Case-insensitive, exact."),
       opcode: str("Binary opcode hex, e.g. `0x6a` or `0xfd 0x89 0x02`. Exact."),
@@ -78,17 +78,19 @@ export const TOOL_REGISTRY: ToolDef[] = [
   {
     name: "instruction_list",
     description:
-      "Enumerate WebAssembly instructions, filterable by `category`, `introduced_in` (1.0|2.0|3.0), and mnemonic `prefix`. Rows sorted by opcode.",
+      "Enumerate WebAssembly instructions, filterable by `category`, `introduced_in` (1.0|2.0|3.0), mnemonic `prefix`, and `can_trap` (only trapping / only non-trapping). Rows (incl. `can_trap`) sorted by opcode.",
     inputSchema: obj({
       category: { type: "string", enum: [...INSTRUCTION_CATEGORIES], description: "Instruction category." },
       introduced_in: { type: "string", enum: [...WASM_VERSIONS], description: "Introducing version." },
       prefix: str("Mnemonic prefix, e.g. `i32.`. Case-insensitive."),
+      can_trap: { type: "boolean", description: "Keep only instructions that can (true) / cannot (false) trap." },
     }),
     handler: (a) => {
       const instructions = listInstructions(SPEC.instructions, {
         category: a.category as never,
         version: a.introduced_in as string | undefined,
         prefix: a.prefix as string | undefined,
+        can_trap: a.can_trap as boolean | undefined,
       });
       return { count: instructions.length, instructions };
     },

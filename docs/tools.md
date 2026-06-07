@@ -18,7 +18,7 @@ _No parameters._
 
 ## instruction_get
 
-Fetch one WebAssembly instruction by mnemonic (`i32.add`, `br_if`) or binary opcode (`0x6a`, `0xfd 0x89 0x02`) as structured JSON: opcode bytes, category, introducing version, stack type signature, and validation/execution prose anchors + spec URLs. Provide `mnemonic` or `opcode` (mnemonic wins if both match).
+Fetch one WebAssembly instruction by mnemonic (`i32.add`, `br_if`) or binary opcode (`0x6a`, `0xfd 0x89 0x02`) as structured JSON: opcode bytes, category, introducing version, stack type signature, validation/execution prose anchors + spec URLs, and `traps` — the runtime conditions under which it traps (each with the spec's canonical trap name; empty + `can_trap: false` for instructions that never trap). Provide `mnemonic` or `opcode` (mnemonic wins if both match).
 
 **Title:** Get instruction
 
@@ -43,7 +43,7 @@ Fetch one WebAssembly instruction by mnemonic (`i32.add`, `br_if`) or binary opc
 
 ## instruction_list
 
-Enumerate WebAssembly instructions with optional filters: `category` (control, numeric, parametric, variable, table, memory, ref, i31, struct, array, extern, vec), `introduced_in` (1.0 | 2.0 | 3.0), and `prefix` (mnemonic prefix like `i32.`). Returns lightweight rows sorted by opcode; follow up with instruction_get for full detail.
+Enumerate WebAssembly instructions with optional filters: `category` (control, numeric, parametric, variable, table, memory, ref, i31, struct, array, extern, vec), `introduced_in` (1.0 | 2.0 | 3.0), `prefix` (mnemonic prefix like `i32.`), and `can_trap` (only trapping / only non-trapping instructions). Returns lightweight rows (incl. `can_trap`) sorted by opcode; follow up with instruction_get for full detail incl. trap conditions.
 
 **Title:** List instructions
 
@@ -52,6 +52,7 @@ Enumerate WebAssembly instructions with optional filters: `category` (control, n
 | `category` | `control` \| `numeric` \| `parametric` \| `variable` \| `table` \| `memory` \| `ref` \| `i31` \| `struct` \| `array` \| `extern` \| `vec` | no | Filter by instruction category: control, numeric, parametric, variable, table, memory, ref, i31, struct, array, extern, vec (vector/SIMD). |
 | `introduced_in` | `1.0` \| `2.0` \| `3.0` | no | Filter to instructions introduced in this WebAssembly version: `1.0`, `2.0`, or `3.0`. |
 | `prefix` | string | no | Filter to mnemonics starting with this prefix, e.g. `i32.` or `v128.`. Case-insensitive. |
+| `can_trap` | boolean | no | Filter by trapping behavior: `true` keeps only instructions that can trap at runtime, `false` keeps only those that never trap. See instruction_get for the per-instruction trap conditions. |
 | `version` | `main` \| `latest` | no | WebAssembly spec version to query. `latest` (default) is the current served version; `main` is the upstream working draft. _(default: `latest`)_ |
 
 **Examples**
@@ -71,6 +72,11 @@ Enumerate WebAssembly instructions with optional filters: `category` (control, n
   {"prefix":"i32."}
   ```
   Prefix filter is the quickest way to scope to one type family.
+- Which instructions can trap?
+  ```json
+  {"can_trap":true}
+  ```
+  can_trap filters to the finite trapping set; each row's can_trap mirrors instruction_get's traps.
 
 ## instruction_search
 

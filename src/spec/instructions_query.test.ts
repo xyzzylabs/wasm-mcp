@@ -128,6 +128,7 @@ describe("toSummary", () => {
       opcodes: [0x6a],
       category: "numeric",
       version: "1.0",
+      can_trap: false,
     });
     expect("signature" in s).toBe(false);
   });

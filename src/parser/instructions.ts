@@ -10,6 +10,7 @@
 // tools query directly — no LaTeX in the surface area.
 
 import { z } from "zod";
+import { deriveTraps, type TrapCondition } from "./traps.js";
 
 export const INSTRUCTION_CATEGORIES = [
   "control",
@@ -78,6 +79,20 @@ export interface InstructionRecord {
     validation: string;
     execution: string;
   };
+  /**
+   * Whether this instruction can trap at runtime. `true` iff `traps`
+   * is non-empty. A quick boolean for "does this trap?" without
+   * inspecting the conditions.
+   */
+  can_trap: boolean;
+  /**
+   * The runtime conditions under which this instruction traps, each
+   * with the spec's canonical trap name. Empty for instructions that
+   * never trap (e.g. `i32.add`). Derived at build time from the
+   * spec's operator partiality + trapping instruction families; see
+   * `src/parser/traps.ts`.
+   */
+  traps: TrapCondition[];
 }
 
 export const InstructionRecordSchema = z.object({
@@ -88,6 +103,8 @@ export const InstructionRecordSchema = z.object({
   signature: z.object({ params_raw: z.string(), results_raw: z.string() }),
   anchors: z.object({ validation: z.string(), execution: z.string() }),
   urls: z.object({ validation: z.url(), execution: z.url() }),
+  can_trap: z.boolean(),
+  traps: z.array(z.object({ condition: z.string(), name: z.string() })),
 });
 
 // Raw upstream-dump shapes (produced by ./upstream.ts). Defined here
@@ -330,6 +347,7 @@ export function normalizeInstructions(dump: RawDump): NormalizeReport {
     // the canonical `"1.0"`/`"2.0"`/`"3.0"` form.
     const version = raw.version.toFixed(1) as WasmVersion;
 
+    const traps = deriveTraps(mnemonic);
     records.push({
       mnemonic,
       opcodes,
@@ -341,6 +359,8 @@ export function normalizeInstructions(dump: RawDump): NormalizeReport {
         validation: instructionUrl(raw.validation),
         execution: instructionUrl(raw.execution),
       },
+      can_trap: traps.length > 0,
+      traps,
     });
   }
 

@@ -12,10 +12,18 @@ export interface InstructionSummary {
   opcodes: number[];
   category: InstructionCategory;
   version: string;
+  /** Whether this instruction can trap at runtime (see instruction_get for conditions). */
+  can_trap: boolean;
 }
 
 export function toSummary(r: InstructionRecord): InstructionSummary {
-  return { mnemonic: r.mnemonic, opcodes: r.opcodes, category: r.category, version: r.version };
+  return {
+    mnemonic: r.mnemonic,
+    opcodes: r.opcodes,
+    category: r.category,
+    version: r.version,
+    can_trap: r.can_trap,
+  };
 }
 
 /** Format a byte array as the conventional space-separated hex string,
@@ -77,6 +85,8 @@ export interface ListFilter {
   version?: string;
   /** Substring matched against the mnemonic prefix, case-insensitive. */
   prefix?: string;
+  /** When set, keep only instructions that can (true) / cannot (false) trap. */
+  can_trap?: boolean;
 }
 
 /** Enumerate instructions, optionally filtered, sorted by opcode. */
@@ -91,6 +101,7 @@ export function listInstructions(
     const p = filter.prefix.toLowerCase();
     out = out.filter((r) => r.mnemonic.toLowerCase().startsWith(p));
   }
+  if (filter.can_trap !== undefined) out = out.filter((r) => r.can_trap === filter.can_trap);
   return [...out]
     .sort((a, b) => compareOpcodes(a.opcodes, b.opcodes))
     .map(toSummary);
