@@ -51,6 +51,31 @@ npx wrangler deploy
 observability. You'll need a Cloudflare account; `wrangler` prompts to
 log in on first use.
 
+## Securing the deploy credentials
+
+CI deploys use a Cloudflare API token. Cloudflare doesn't yet support
+OIDC / federated identity for `wrangler` in GitHub Actions
+([wrangler-action#402](https://github.com/cloudflare/wrangler-action/issues/402)),
+so a token is required — and the "Edit Cloudflare Workers" token is
+**account-scoped** (it can touch every Worker on the account; you
+can't scope it to a single Worker). To limit its exposure:
+
+- **Store it as a GitHub *Environment* secret**, not a repo-wide one.
+  The deploy job runs in the `cloudflare` environment
+  (`environment: cloudflare` in `deploy-worker.yml`), so put
+  `CLOUDFLARE_API_TOKEN` (and `CLOUDFLARE_ACCOUNT_ID`) on that
+  environment. Only this job can then read them — a pull-request
+  workflow cannot.
+- **Add an environment deployment rule** limiting the allowed refs to
+  `main` and `v*` (Settings → Environments → `cloudflare` → Deployment
+  branches and tags). Optionally require a reviewer for an approval
+  gate before any deploy.
+- **One token per repo** (don't share across repos); narrow its
+  account scope as far as Cloudflare allows.
+
+When wrangler ships OIDC, this token goes away entirely — the same
+move npm Trusted Publishing already made for the npm publish.
+
 ## Auto-refresh
 
 A scheduled GitHub Actions workflow

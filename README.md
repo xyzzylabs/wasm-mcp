@@ -103,7 +103,10 @@ Maintainers:
   (OIDC) — no `NPM_TOKEN`. Configure it once on npmjs.com (wasm-mcp →
   Settings → Trusted Publisher → GitHub Actions: org `xyzzylabs`, repo
   `wasm-mcp`, workflow `release.yml`).
-- **Worker deploy** needs `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`.
+- **Worker deploy** needs `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`,
+  stored as **environment** secrets on the `cloudflare` GitHub
+  Environment (not repo-wide) with a `main` + `v*` deployment rule —
+  see [Securing the deploy credentials](https://github.com/xyzzylabs/wasm-mcp/blob/main/docs/deployment.md#securing-the-deploy-credentials).
 - For the refresh workflow's tag push to trigger release + deploy,
   add a `WORKFLOW_PAT` PAT (`contents: write` + `workflows`) —
   without it, refresh still re-pins and tags, but you run release /
