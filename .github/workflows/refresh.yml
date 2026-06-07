@@ -29,11 +29,11 @@ jobs:
       # tag push it makes below triggers them. Falls back to the
       # default token: the re-pin commit + tag still land, but you'd
       # then run release / deploy manually.
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           token: ${{ secrets.RELEASE_TOKEN || github.token }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "22"
           cache: npm
