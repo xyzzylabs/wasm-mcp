@@ -30,12 +30,11 @@ jobs:
 
       - run: npm ci
       # The Worker bundles build/*.json, so the data must exist before
-      # `wrangler deploy` runs (build/ is gitignored).
+      # `wrangler deploy` runs (build/ is gitignored). The docs-site
+      # assets are rebuilt by wrangler's `[build]` command (worker:assets)
+      # during the deploy step below.
       - run: npm run fetch-spec
       - run: npm run build-spec
-      # Build the VitePress docs site into worker/public/ (the Worker's
-      # static assets). Reads build/*.json for the snapshots page.
-      - run: npm run worker:assets
 
       - name: Install worker deps
         working-directory: worker

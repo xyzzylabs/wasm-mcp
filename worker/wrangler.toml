@@ -3,6 +3,14 @@ main = "src/index.ts"
 compatibility_date = "2025-05-01"
 compatibility_flags = ["nodejs_compat"]
 
+# Runs before `wrangler deploy` and `wrangler dev`, so a bare
+# `npx wrangler deploy` always rebuilds the VitePress docs site into
+# worker/public/ (the static assets) from the current source. Requires
+# the repo-root deps (`npm ci` at root) and the baked data
+# (`npm run build-spec`) to exist — the Worker bundle imports build/*.json.
+[build]
+command = "cd .. && npm run worker:assets"
+
 # Static landing page. The Worker dispatches /mcp, /health, and
 # /privacy itself; everything else is served from this directory.
 [assets]
