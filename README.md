@@ -1,6 +1,6 @@
 # wasm-mcp
 
-Unofficial Model Context Protocol server for the
+Model Context Protocol server for the
 [WebAssembly core specification](https://webassembly.github.io/spec/core/).
 SHA-pinned, read-only, deterministic — safe to host as a public
 unauthenticated endpoint.

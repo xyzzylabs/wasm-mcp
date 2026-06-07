@@ -17,8 +17,8 @@ export const PRIVACY_HTML = `<!doctype html>
 </head>
 <body>
 <h1>wasm-mcp — Privacy</h1>
-<p>wasm-mcp is an unofficial, read-only Model Context Protocol server
-over the WebAssembly specification. It is not affiliated with the W3C
+<p>wasm-mcp is a read-only Model Context Protocol server over the
+WebAssembly specification. It is not affiliated with the W3C
 WebAssembly Community Group or Working Group.</p>
 
 <h2>What we collect</h2>

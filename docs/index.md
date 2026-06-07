@@ -46,7 +46,7 @@ features:
     details: A scheduled workflow SHA-diffs the upstream repos daily and ships a patch release when the spec moves — npm package and hosted Worker stay current automatically.
 ---
 
-> **Unofficial / community project** — not affiliated with, endorsed by, or maintained by the W3C WebAssembly Community Group or Working Group. It reads the publicly published WebAssembly specification.
+> Not affiliated with, endorsed by, or maintained by the W3C WebAssembly Community Group or Working Group. It reads the publicly published WebAssembly specification.
 
 ## Install + run
 

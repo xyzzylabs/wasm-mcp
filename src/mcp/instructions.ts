@@ -13,8 +13,8 @@ specification (https://github.com/WebAssembly/spec). Every response
 is deterministic over data pinned to a specific upstream commit and
 baked into the package at build time.
 
-Unofficial, community-maintained — not affiliated with, endorsed by,
-or sponsored by the W3C WebAssembly Community Group or Working Group.
+Not affiliated with, endorsed by, or sponsored by the W3C WebAssembly
+Community Group or Working Group.
 
 Common workflow:
   1. \`spec_version\` — call first when you need to cite the spec or

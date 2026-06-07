@@ -1,7 +1,7 @@
 # Privacy Policy
 
-`wasm-mcp` is an unofficial, read-only Model Context Protocol server
-over the WebAssembly specification. It is not affiliated with the W3C
+`wasm-mcp` is a read-only Model Context Protocol server over the
+WebAssembly specification. It is not affiliated with the W3C
 WebAssembly Community Group or Working Group.
 
 ## What we collect

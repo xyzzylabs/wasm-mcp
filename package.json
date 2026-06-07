@@ -3,7 +3,7 @@
   "version": "0.1.2",
   "mcpName": "io.github.xyzzylabs/wasm-mcp",
   "private": false,
-  "description": "Unofficial MCP server for the WebAssembly core specification — SHA-pinned instructions, types, sections, and search. Not affiliated with the W3C WebAssembly CG.",
+  "description": "MCP server for the WebAssembly core specification — SHA-pinned instructions, types, sections, and search. Not affiliated with the W3C WebAssembly CG.",
   "type": "module",
   "bin": {
     "wasm-mcp": "dist/mcp/server.js"

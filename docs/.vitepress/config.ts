@@ -14,7 +14,7 @@ import pkg from "../../package.json";
 export default defineConfig({
   title: "wasm-mcp",
   description:
-    "Unofficial MCP server for the WebAssembly specification — SHA-pinned instructions, types, sections, search, and proposals. Not affiliated with the W3C WebAssembly CG/WG.",
+    "MCP server for the WebAssembly specification — SHA-pinned instructions, types, sections, search, and proposals. Not affiliated with the W3C WebAssembly CG/WG.",
 
   base: "/",
   cleanUrls: true,
