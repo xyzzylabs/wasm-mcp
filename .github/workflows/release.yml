@@ -88,18 +88,28 @@ jobs:
           GITHUB_REF_NAME: ${{ github.ref_name }}
         run: |
           version="${GITHUB_REF_NAME#v}"
-          echo "Waiting for wasm-mcp@$version on the registry..."
+          echo "Smoke-testing wasm-mcp@$version (retrying through registry/CDN propagation)..."
+          # Retry the FULL install+roundtrip, not just the registry
+          # metadata: `npm view` sees a new version's metadata seconds
+          # before the tarball is installable from the CDN, so a single
+          # npx attempt right after publish races and fails with
+          # "wasm-mcp: not found". Polling the actual npx roundtrip
+          # waits out propagation.
           for i in $(seq 1 10); do
-            [ "$(npm view "wasm-mcp@$version" version 2>/dev/null)" = "$version" ] && break
-            [ "$i" = "10" ] && { echo "Timed out waiting for registry propagation" >&2; exit 1; }
+            out=$(printf '%s\n' \
+              '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' \
+              '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
+              '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"spec_version","arguments":{}}}' \
+              | npx -y "wasm-mcp@$version" 2>/dev/null || true)
+            if echo "$out" | grep -q '"spec/main"'; then
+              echo "Smoke OK"
+              exit 0
+            fi
+            echo "attempt $i/10: not installable yet, retrying in 30s..."
             sleep 30
           done
-          printf '%s\n' \
-            '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' \
-            '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
-            '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"spec_version","arguments":{}}}' \
-            | npx -y "wasm-mcp@$version" \
-            | grep -q '"spec/main"' && echo "Smoke OK" || { echo "Smoke FAILED" >&2; exit 1; }
+          echo "Smoke FAILED after retries (publish itself succeeded; this is install/propagation)" >&2
+          exit 1
 
       - name: Install mcp-publisher
         # Prebuilt binary from the MCP Registry's GitHub releases.
