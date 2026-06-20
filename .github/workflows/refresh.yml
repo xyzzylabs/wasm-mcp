@@ -29,7 +29,7 @@ jobs:
       # tag push it makes below triggers them. Falls back to the
       # default token: the re-pin commit + tag still land, but you'd
       # then run release / deploy manually.
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           token: ${{ secrets.WORKFLOW_PAT || github.token }}
 
