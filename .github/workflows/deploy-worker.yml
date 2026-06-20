@@ -27,7 +27,7 @@ jobs:
     # protection rules (allowed refs / optional required reviewers).
     environment: cloudflare
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v6
         with:
