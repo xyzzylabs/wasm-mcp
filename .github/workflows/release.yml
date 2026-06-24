@@ -108,7 +108,7 @@ jobs:
               '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"ci","version":"0"}}}' \
               '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
               '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"spec_version","arguments":{}}}' \
-              | npx -y --silent "wasm-mcp@$version" 2>/dev/null || true)
+              | npx -y "wasm-mcp@$version" 2>/dev/null || true)
             if echo "$out" | grep -q '"spec/main"'; then
               echo "Smoke OK"
               exit 0

@@ -37,7 +37,7 @@ features:
     details: All data is fetched and indexed at build time from a pinned commit of WebAssembly/spec and baked into the package. Same input → same output. No network at request time.
   - icon: 🔌
     title: Two ways to run it
-    details: Local stdio via `npx --silent wasm-mcp`, or the hosted Cloudflare Worker over streamable HTTP. Same MCP protocol, same tools, two transports.
+    details: Local stdio via `npx wasm-mcp`, or the hosted Cloudflare Worker over streamable HTTP. Same MCP protocol, same tools, two transports.
   - icon: 🚫
     title: Safe to host
     details: Read-only, no execution (never compiles, validates-by-running, or instantiates any Wasm), no auth, no secrets, no PII. The hosted endpoint is anonymous and IP-rate-limited.
@@ -56,7 +56,7 @@ features:
 // Wire into Claude Code via .mcp.json:
 {
   "mcpServers": {
-    "wasm": { "command": "npx", "args": ["--silent", "wasm-mcp"] }
+    "wasm": { "command": "npx", "args": ["wasm-mcp"] }
   }
 }
 ```

@@ -17,7 +17,7 @@ Add to your project's `.mcp.json` (or the Claude Desktop config):
 ```json
 {
   "mcpServers": {
-    "wasm": { "command": "npx", "args": ["--silent", "wasm-mcp"] }
+    "wasm": { "command": "npx", "args": ["wasm-mcp"] }
   }
 }
 ```
@@ -28,7 +28,7 @@ picker.
 ### Any MCP client
 
 ```sh
-npx --silent wasm-mcp   # speaks MCP over stdio (--silent keeps npm banners off stdout)
+npx wasm-mcp        # speaks MCP over stdio
 ```
 
 ## Option B — hosted (HTTP)
