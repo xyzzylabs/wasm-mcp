@@ -55,8 +55,11 @@ Every tool is:
 ## Install (stdio, local)
 
 ```bash
-npx wasm-mcp
+npx --silent wasm-mcp
 ```
+
+`--silent` keeps npm's own banners/notices off stdout, which would
+otherwise corrupt the JSON-RPC stream the MCP client reads.
 
 Wire into Claude Code by adding to your project's `.mcp.json`:
 
@@ -66,7 +69,7 @@ Wire into Claude Code by adding to your project's `.mcp.json`:
     "wasm": {
       "type": "stdio",
       "command": "npx",
-      "args": ["wasm-mcp"]
+      "args": ["--silent", "wasm-mcp"]
     }
   }
 }
