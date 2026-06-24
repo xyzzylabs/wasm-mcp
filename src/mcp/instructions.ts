@@ -62,7 +62,7 @@ The tool surface is intentionally narrow:
     judgement), not by applying them.
 
 Transport differences:
-  - The stdio server (npx --silent wasm-mcp) exposes all ${TOTAL_TOOL_COUNT} tools.
+  - The stdio server (npx wasm-mcp) exposes all ${TOTAL_TOOL_COUNT} tools.
   - The hosted Cloudflare Worker exposes ${HOSTED_TOOLS.length} of them.
   - Tools that need a subprocess or filesystem (${STDIO_ONLY_TOOLS.length} today)
     are stdio-only.
