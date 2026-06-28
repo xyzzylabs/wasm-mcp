@@ -4,7 +4,7 @@ The hosted endpoint is a Cloudflare Worker that speaks MCP's JSON-RPC
 over HTTP. It exposes the same 9 tools as the stdio package.
 
 ```
-https://wasm-mcp.chicoxyzzy.workers.dev/mcp
+https://mcp.xyzzylabs.ai/wasm/mcp
 ```
 
 ## Endpoints

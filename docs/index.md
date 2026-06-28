@@ -63,7 +63,7 @@ features:
 
 ```sh [hosted (HTTP)]
 # Streamable-HTTP MCP endpoint — no install:
-https://wasm-mcp.chicoxyzzy.workers.dev/mcp
+https://mcp.xyzzylabs.ai/wasm/mcp
 ```
 
 :::

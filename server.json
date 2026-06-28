@@ -3,7 +3,7 @@
   "name": "io.github.xyzzylabs/wasm-mcp",
   "title": "wasm-mcp",
   "description": "Read-only MCP server for the WebAssembly spec: instructions, types, sections, search, proposals.",
-  "websiteUrl": "https://wasm-mcp.chicoxyzzy.workers.dev",
+  "websiteUrl": "https://mcp.xyzzylabs.ai/wasm/",
   "repository": {
     "url": "https://github.com/xyzzylabs/wasm-mcp",
     "source": "github"
@@ -22,7 +22,7 @@
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://wasm-mcp.chicoxyzzy.workers.dev/mcp"
+      "url": "https://mcp.xyzzylabs.ai/wasm/mcp"
     }
   ]
 }

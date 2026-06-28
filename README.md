@@ -79,7 +79,7 @@ surface as the stdio package over streamable HTTP at a single
 unauthenticated endpoint, rate-limited per source IP (30 req / 60 s):
 
 ```
-https://wasm-mcp.chicoxyzzy.workers.dev/mcp
+https://mcp.xyzzylabs.ai/wasm/mcp
 ```
 
 `GET /health` reports status and the pinned SHAs; `GET /privacy`

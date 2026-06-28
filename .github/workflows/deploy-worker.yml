@@ -56,4 +56,4 @@ jobs:
       - name: Smoke test
         run: |
           sleep 5
-          curl -fsS https://wasm-mcp.chicoxyzzy.workers.dev/health | tee /dev/stderr | grep -q '"status":"ok"'
+          curl -fsS https://mcp.xyzzylabs.ai/wasm/health | tee /dev/stderr | grep -q '"status":"ok"'

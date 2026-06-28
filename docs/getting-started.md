@@ -37,7 +37,7 @@ Point any streamable-HTTP MCP client at the hosted Worker — nothing to
 install:
 
 ```
-https://wasm-mcp.chicoxyzzy.workers.dev/mcp
+https://mcp.xyzzylabs.ai/wasm/mcp
 ```
 
 It's anonymous (no auth) and IP-rate-limited. `GET /health` reports
