@@ -82,7 +82,7 @@ unauthenticated endpoint, rate-limited per source IP (30 req / 60 s):
 https://mcp.xyzzylabs.ai/wasm/mcp
 ```
 
-`GET /health` reports status and the pinned SHAs; `GET /privacy`
+`GET /wasm/health` reports status and the pinned SHAs; `GET /wasm/privacy`
 states the anonymous, no-storage posture. All spec data is bundled
 into the Worker, so it does pure in-memory lookups — no storage, no
 network at request time.

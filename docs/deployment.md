@@ -9,6 +9,13 @@ https://mcp.xyzzylabs.ai/wasm/mcp
 
 ## Endpoints
 
+Routes are shown relative to the worker root. Publicly the worker is
+served under `https://mcp.xyzzylabs.ai/wasm/`, so prefix each with
+`/wasm` (e.g. the MCP endpoint is `https://mcp.xyzzylabs.ai/wasm/mcp`,
+health is `…/wasm/health`). The `/wasm` prefix is stripped
+Cloudflare-side before the worker, which is why the routes below — and
+the worker code — use the bare paths.
+
 | Route | Method | Purpose |
 |---|---|---|
 | `/mcp` | POST | MCP JSON-RPC (single or batch) |

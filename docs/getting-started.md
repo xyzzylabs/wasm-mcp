@@ -40,8 +40,8 @@ install:
 https://mcp.xyzzylabs.ai/wasm/mcp
 ```
 
-It's anonymous (no auth) and IP-rate-limited. `GET /health` reports
-the pinned SHAs; see [Deployment](/deployment) to host your own.
+It's anonymous (no auth) and IP-rate-limited. `GET /wasm/health`
+reports the pinned SHAs; see [Deployment](/deployment) to host your own.
 
 ## First calls
 
