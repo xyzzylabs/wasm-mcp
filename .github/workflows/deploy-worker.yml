@@ -56,4 +56,7 @@ jobs:
       - name: Smoke test
         run: |
           sleep 5
-          curl -fsS https://mcp.xyzzylabs.ai/wasm/health | tee /dev/stderr | grep -q '"status":"ok"'
+          # The public /wasm/ endpoint is fronted by a gateway that
+          # pretty-prints JSON ("status": "ok"), so match tolerant of
+          # whitespace rather than the compact form.
+          curl -fsS https://mcp.xyzzylabs.ai/wasm/health | tee /dev/stderr | grep -qE '"status":[[:space:]]*"ok"'
