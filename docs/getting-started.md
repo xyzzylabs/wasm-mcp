@@ -8,11 +8,9 @@ spec precisely instead of guessing.
 
 ## Option A — local (stdio)
 
-No install needed; `npx` fetches and runs it.
-
-### Claude Code / Claude Desktop
-
-Add to your project's `.mcp.json` (or the Claude Desktop config):
+No install needed; `npx` fetches and runs it. Add the server to your
+MCP client's config — the launch command is identical across clients;
+only the config file's location differs (check your client's MCP docs):
 
 ```json
 {
@@ -23,13 +21,8 @@ Add to your project's `.mcp.json` (or the Claude Desktop config):
 ```
 
 Restart the client; the `wasm` server's 9 tools appear in the tool
-picker.
-
-### Any MCP client
-
-```sh
-npx wasm-mcp        # speaks MCP over stdio
-```
+picker. Clients that take a bare stdio command rather than a
+`mcpServers` map run `npx wasm-mcp` directly.
 
 ## Option B — hosted (HTTP)
 

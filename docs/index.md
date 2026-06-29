@@ -19,7 +19,7 @@ hero:
 features:
   - icon: 🤖
     title: Spec lookup for AI agents
-    details: Any MCP client (Claude Code, Claude Desktop, Cursor, MCP Inspector) gets instruction_get, type_get, section_get, spec_search, and more — structured JSON answers grounded on real spec text instead of grep'd HTML. Every answer carries a stable anchor and the rendered spec URL.
+    details: Any MCP client gets instruction_get, type_get, section_get, spec_search, and more — structured JSON answers grounded on real spec text instead of grep'd HTML. Every answer carries a stable anchor and the rendered spec URL.
   - icon: 🧩
     title: 9 tools
     details: "spec_version · instruction_get / list / search · type_get · section_get / list · spec_search · proposal_list"
@@ -50,10 +50,12 @@ features:
 
 ## Install + run
 
+The stdio launch command is the same for every MCP client; only the
+config file's location differs (check your client's MCP docs).
+
 ::: code-group
 
-```json [stdio (npx, recommended)]
-// Wire into Claude Code via .mcp.json:
+```json [stdio (npx)]
 {
   "mcpServers": {
     "wasm": { "command": "npx", "args": ["wasm-mcp"] }
