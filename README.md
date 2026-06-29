@@ -58,7 +58,8 @@ Every tool is:
 npx wasm-mcp
 ```
 
-Wire into Claude Code by adding to your project's `.mcp.json`:
+Wire it into any MCP client by adding the server to its config (the
+launch command is the same everywhere; only the config file differs):
 
 ```json
 {
