@@ -12,9 +12,9 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260629.1",
     "@typescript/native-preview": "^7.0.0-dev.20260629.1",
-    "tsx": "^4.19.2",
+    "tsx": "^4.23.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9",
-    "wrangler": "^4.105.0"
+    "wrangler": "^4.107.0"
   }
 }
