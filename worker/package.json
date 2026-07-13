@@ -6,14 +6,13 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
-    "typecheck": "tsgo --noEmit",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260629.1",
-    "@typescript/native-preview": "^7.0.0-dev.20260707.2",
     "tsx": "^4.23.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vitest": "^4.1.9",
     "wrangler": "^4.107.0"
   }

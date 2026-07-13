@@ -26,8 +26,8 @@
   ],
   "scripts": {
     "clean": "rm -rf dist",
-    "build": "npm run clean && tsgo && chmod +x dist/mcp/server.js",
-    "typecheck": "tsgo --noEmit",
+    "build": "npm run clean && tsc && chmod +x dist/mcp/server.js",
+    "typecheck": "tsc --noEmit",
     "fetch-spec": "bash scripts/fetch-spec.sh",
     "build-spec": "bash scripts/build-spec.sh",
     "parse": "tsx src/parser/cli.ts",
@@ -53,10 +53,9 @@
   },
   "devDependencies": {
     "@types/node": "^26.0.0",
-    "@typescript/native-preview": "^7.0.0-dev.20260620.1",
     "cheerio": "^1.0.0",
     "tsx": "^4.19.2",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vitepress": "^1.6.4",
     "vitest": "^4.1.9"
   },
