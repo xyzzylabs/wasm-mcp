@@ -1,6 +1,6 @@
 {
   "name": "wasm-mcp",
-  "version": "0.2.22",
+  "version": "0.2.23",
   "mcpName": "io.github.xyzzylabs/wasm-mcp",
   "private": false,
   "description": "MCP server for the WebAssembly core specification — SHA-pinned instructions, types, sections, and search. Not affiliated with the W3C WebAssembly CG.",
