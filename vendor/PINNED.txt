@@ -6,5 +6,5 @@
 #
 # Format: one `key=sha` per line. `#` starts a comment.
 
-spec/main=608711107b7f1edb13efd57b7d79b49477462d36
+spec/main=bc030375d734de845aa2246b783ca6a7ee865eb4
 proposals/main=f0db14a5555abf7b931667fd289755124a3bf37e
