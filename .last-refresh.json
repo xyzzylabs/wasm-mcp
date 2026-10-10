@@ -1,10 +1,10 @@
 {
-  "refreshed_at": "2026-10-09T12:15:04.758Z",
+  "refreshed_at": "2026-10-10T11:32:41.769Z",
   "last_npm_publish": {
-    "version": "0.2.39"
+    "version": "0.2.40"
   },
   "pins": {
-    "spec/main": "6418777559895f2e32968791c916b4d1659ecc90",
+    "spec/main": "7e9fb78c63d65018cc111422f657947b3df80d7b",
     "proposals/main": "df6a2aca1cd9d779eb4f2f3e19dae8277f336015"
   }
 }
